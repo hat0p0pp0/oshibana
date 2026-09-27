@@ -1,0 +1,847 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="自分の型を知って、推し仲間と学び直すプラットフォーム（モック）">
+<meta name="theme-color" content="#F4F5FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12131D" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="オシバナ">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>オシバナ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F4F5FA;--sheet:#FFFFFF;--ink:#191B2E;--ink2:#62657A;--line:#E3E4EE;--chip:#EEEFF6;--shu:#3D5AFE;--ha:#FF3D7F;--ri:#0DAA7B;--yell:#F59E0B;--shu-t:rgba(61,90,254,.16);--ha-t:rgba(255,61,127,.12);--ri-t:rgba(13,170,123,.14);--seed:#9A6B45;--shadow:#191B2E;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#12131D;--sheet:#1C1E2B;--ink:#F3F3FA;--ink2:#A3A6BA;--line:#2F3244;--chip:#262939;--shu:#8093FF;--ha:#FF6FA0;--ri:#3DD6A3;--yell:#FFBF4D;--shu-t:rgba(128,147,255,.2);--ha-t:rgba(255,111,160,.15);--ri-t:rgba(61,214,163,.16);--seed:#C99A72;--shadow:#000;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#12131D;--sheet:#1C1E2B;--ink:#F3F3FA;--ink2:#A3A6BA;--line:#2F3244;--chip:#262939;--shu:#8093FF;--ha:#FF6FA0;--ri:#3DD6A3;--yell:#FFBF4D;--shu-t:rgba(128,147,255,.2);--ha-t:rgba(255,111,160,.15);--ri-t:rgba(61,214,163,.16);--seed:#C99A72;--shadow:#000;color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'M PLUS Rounded 1c','Hiragino Maru Gothic ProN','Hiragino Sans','Noto Sans JP',system-ui,sans-serif;font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--shu);outline-offset:2px}
+.app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--paper);padding-bottom:110px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--paper);display:flex;align-items:center;gap:8px;padding:12px 16px}
+.brand{display:flex;align-items:center;gap:6px;font-weight:800;font-size:20px;letter-spacing:.02em;white-space:nowrap}
+.brand svg{width:26px;height:26px}
+.top-r{margin-left:auto;display:flex;gap:6px;align-items:center}
+.top select{font-size:12px;border:1.5px solid var(--line);background:var(--sheet);border-radius:999px;padding:6px 10px;max-width:104px;font-weight:700}
+.mode{font-size:12px;border:2px solid var(--ink);background:var(--yell);color:#191B2E;border-radius:999px;padding:5px 11px;font-weight:800;box-shadow:2px 2px 0 var(--shadow);white-space:nowrap}
+.icon{border:0;background:var(--sheet);width:34px;height:34px;border-radius:50%;font-size:22px;line-height:1;color:var(--ink);display:grid;place-items:center;padding:0 0 3px;border:1.5px solid var(--line)}
+.tabs{position:fixed;bottom:calc(10px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:456px;z-index:30;background:var(--sheet);border:2px solid var(--ink);border-radius:24px;box-shadow:3px 3px 0 var(--shadow);display:grid;grid-template-columns:repeat(5,1fr);padding:6px}
+.tabs button{border:0;background:none;padding:6px 0;font-size:10.5px;color:var(--ink2);display:flex;flex-direction:column;align-items:center;gap:1px;border-radius:16px;font-weight:700}
+.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabs button[aria-current="page"]{color:var(--ha);background:var(--ha-t)}
+main{padding:0 0 8px}
+.pad{padding:0 16px}
+h1,h2,h3{font-weight:800;line-height:1.35;margin:0}
+h1{font-size:26px;margin:8px 16px 6px}
+h2{font-size:18px;margin:26px 16px 10px}
+h3{font-size:16px;margin:0 0 6px}
+p{margin:0 0 8px}
+.lead{color:var(--ink2);margin:0 16px 12px;font-size:14px}
+.sheet{background:var(--sheet);border:1.5px solid var(--line);border-radius:22px;padding:18px;margin:10px 16px}
+.pop{border:2px solid var(--ink);box-shadow:4px 4px 0 var(--shadow)}
+.row{display:flex;align-items:center;gap:10px}
+.between{justify-content:space-between}
+.muted{color:var(--ink2);font-size:13px}
+.small{font-size:12px}
+.btn{border:2px solid var(--ink);border-radius:999px;padding:12px 20px;background:var(--ink);color:var(--paper);font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:6px;box-shadow:3px 3px 0 var(--shadow);transition:transform .08s,box-shadow .08s}
+.btn:active:not(:disabled){transform:translate(2px,2px);box-shadow:1px 1px 0 var(--shadow)}
+.btn.full{width:100%}
+.btn.big{padding:16px 22px;font-size:17px}
+.btn.ha{background:var(--ha);color:#fff}
+.btn.ri{background:var(--ri);color:#fff}
+.btn.ghost{background:var(--sheet);color:var(--ink)}
+.btn.sm{padding:7px 14px;font-size:13px;box-shadow:2px 2px 0 var(--shadow)}
+.btn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+.stack>*+*{margin-top:12px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{border:1.5px solid var(--line);background:var(--sheet);border-radius:999px;padding:6px 13px;font-size:13px;font-weight:700;text-decoration:none;color:var(--ink);transition:transform .08s}
+.chip:active{transform:scale(.95)}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip.on::before{content:'✓ '}
+.chip.shu.on{background:var(--shu);border-color:var(--shu);color:#fff}
+.chip.ha.on{background:var(--ha);border-color:var(--ha);color:#fff}
+.chip.ri.on{background:var(--ri);border-color:var(--ri);color:#fff}
+.chip.shu.on::before,.chip.ha.on::before,.chip.ri.on::before{content:''}
+.tag{display:inline-block;font-size:11px;border-radius:999px;padding:2px 9px;background:var(--chip);color:var(--ink2);white-space:nowrap;font-weight:700}
+.tag.ha{background:var(--ha-t);color:var(--ha)}
+.tag.shu{background:var(--shu-t);color:var(--shu)}
+.tag.ri{background:var(--ri-t);color:var(--ri)}
+.tag.yell{background:rgba(245,158,11,.16);color:var(--yell)}
+.seg{display:flex;margin:6px 16px 4px;gap:6px;overflow-x:auto;padding:2px}
+.seg button{flex:1;border:1.5px solid var(--line);background:var(--sheet);border-radius:999px;padding:7px 10px;font-size:13px;white-space:nowrap;color:var(--ink2);font-weight:700}
+.seg button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.flower{display:block;margin:0 auto;max-width:100%;height:auto}
+.flower .lbl{font-size:11px;fill:var(--ink2);font-family:inherit;font-weight:700}
+.flower .side{font-size:13px;font-weight:800;fill:var(--ink)}
+.flower .guide{fill:none;stroke:var(--line);stroke-width:1}
+.flower .guide.mid{stroke-dasharray:3 4}
+.p-shu{fill:var(--shu-t);stroke:var(--shu);stroke-width:1.8;stroke-linejoin:round}
+.p-ha{fill:var(--ha-t);stroke:var(--ha);stroke-width:1.6;stroke-dasharray:5 3}
+.p-ri{fill:none;stroke:var(--ri);stroke-width:2.4;stroke-linejoin:round}
+.p-fr{fill:none;stroke:var(--ha);stroke-width:2}
+.ri-band{fill:var(--ri-t);opacity:.6}
+.bloom .p-shu,.bloom .p-ha{transform-box:view-box;transform-origin:0 0;animation:bloom .9s cubic-bezier(.2,.8,.2,1) both}
+@keyframes bloom{from{transform:scale(0) rotate(-40deg);opacity:0}to{transform:none;opacity:1}}
+.legend{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--ink2);margin:6px 0 0;font-weight:700}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:5px;margin-right:4px;vertical-align:middle}
+.meter{height:8px;background:var(--chip);border-radius:4px;overflow:hidden}
+.meter>span{display:block;height:100%;background:var(--shu);border-radius:4px}
+.meter.ha>span{background:var(--ha)}
+.meter.ri>span{background:var(--ri)}
+.meter.yell>span{background:var(--yell)}
+.axis{padding:14px 0;border-top:1.5px dashed var(--line)}
+.axis:first-child{border-top:0;padding-top:0}
+.axis .ends{display:flex;justify-content:space-between;font-size:12px;color:var(--ink2);font-weight:700}
+.track{position:relative;height:22px;margin:4px 0}
+.track .base{position:absolute;left:0;right:0;top:10px;height:3px;background:var(--line);border-radius:2px}
+.track .band{position:absolute;top:4px;height:14px;background:var(--ri-t);border-radius:7px}
+.track .arrow{position:absolute;top:10px;height:3px;background:var(--ha)}
+.track .goal{position:absolute;top:0;width:6px;height:22px;margin-left:-3px;border-radius:3px;background:var(--ri)}
+.track .dot{position:absolute;top:3px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:var(--shu);border:3px solid var(--sheet);box-shadow:0 0 0 1.5px var(--shu)}
+.track .dot.fr{background:var(--ha);box-shadow:0 0 0 1.5px var(--ha)}
+.track-key{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--ink2);font-weight:700;margin-bottom:10px}
+.track-key i{display:inline-block;vertical-align:middle;margin-right:4px}
+input[type=range]{width:100%;accent-color:var(--ri)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 16px}
+.pair .sheet{margin:0}
+.card-shu{background:linear-gradient(var(--shu-t),var(--shu-t)),var(--sheet);border-color:transparent}
+.card-ha{background:linear-gradient(var(--ha-t),var(--ha-t)),var(--sheet);border-color:transparent}
+.card-ri{background:linear-gradient(var(--ri-t),var(--ri-t)),var(--sheet);border-color:transparent}
+.card-shu h3{color:var(--shu)}.card-ha h3{color:var(--ha)}.card-ri h3{color:var(--ri)}
+.kv{list-style:none;padding:0;margin:0}
+.kv li{padding:7px 0;border-top:1.5px dashed var(--line);font-size:14px}
+.kv li:first-child{border-top:0}
+.kv b{display:block;font-size:11px;color:var(--ink2);font-weight:700}
+.hist{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.hist figure{margin:0;text-align:center;min-width:92px}
+.hist figcaption{font-size:11px;color:var(--ink2);font-weight:700}
+.srl{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:4px;margin:6px 16px 4px}
+.srl>i{font-style:normal;color:var(--ink2);font-weight:800}
+.srl-i{border-radius:18px;padding:10px 6px;text-align:center;color:#fff;display:flex;flex-direction:column;line-height:1.3}
+.srl-i b{font-size:24px;font-weight:800}
+.srl-i span{font-size:12px;font-weight:800}
+.srl-i small{font-size:10px;opacity:.9}
+.srl-i.shu{background:var(--shu)}.srl-i.ha{background:var(--ha)}.srl-i.ri{background:var(--ri)}
+.qdots{display:flex;gap:6px;justify-content:center;margin:4px 16px 0;flex-wrap:wrap}
+.qdots button{width:22px;height:8px;border-radius:4px;border:0;background:var(--line);padding:0}
+.qdots button.done{background:var(--ri)}
+.qdots button.cur{background:var(--ink);width:32px}
+.qcard{text-align:center;padding:26px 18px}
+.qtext{font-size:19px;font-weight:800;line-height:1.55;margin:12px 0 22px;min-height:88px;display:flex;align-items:center;justify-content:center}
+.scale{display:flex;justify-content:space-between;align-items:center;gap:4px}
+.scale button{border:2.5px solid var(--line);background:var(--sheet);border-radius:50%;padding:0;transition:transform .1s;display:grid;place-items:center;color:#fff;font-size:13px;font-weight:800}
+.scale button:active{transform:scale(.9)}
+.scale button.l{border-color:var(--shu)}
+.scale button.r{border-color:var(--ha)}
+.scale button.on{background:var(--ink);border-color:var(--ink)}
+.scale button.l.on{background:var(--shu);border-color:var(--shu)}
+.scale button.r.on{background:var(--ha);border-color:var(--ha)}
+.scale-ends{display:flex;justify-content:space-between;font-size:12px;color:var(--ink2);margin-top:8px;font-weight:700}
+.opt{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1.5px dashed var(--line);width:100%;background:none;border-left:0;border-right:0;border-bottom:0;text-align:left}
+.opt:first-of-type{border-top:0}
+.opt .box{width:22px;height:22px;border-radius:7px;border:2px solid var(--line);flex:none;display:grid;place-items:center;font-size:13px}
+.opt.on .box{background:var(--ha);border-color:var(--ha);color:#fff}
+.opt .grow{flex:1}
+.bar{height:6px;background:var(--chip);border-radius:3px;margin-top:5px}
+.bar span{display:block;height:100%;background:var(--ha);border-radius:3px}
+.mandala{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 16px}
+.mandala .qd{border-radius:22px;padding:14px;font-size:13px;min-height:130px}
+.mandala .qd b{display:block;font-size:13px;margin-bottom:4px;font-weight:800}
+.mandala .q1{background:var(--shu-t);padding-right:46px;padding-bottom:40px}
+.mandala .q2{background:var(--ri-t);padding-left:46px;padding-bottom:40px;text-align:right}
+.mandala .q3{background:rgba(245,158,11,.16);padding-right:46px;padding-top:40px}
+.mandala .q4{background:var(--ha-t);padding-left:46px;padding-top:40px;text-align:right}
+.mandala .q1 b{color:var(--shu)}.mandala .q2 b{color:var(--ri)}.mandala .q3 b{color:var(--yell)}.mandala .q4 b{color:var(--ha)}
+.mandala .core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:96px;height:96px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;text-align:center;font-weight:800;font-size:14px;line-height:1.3;padding:8px;border:5px solid var(--paper)}
+.list-item{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1.5px dashed var(--line);width:100%;background:none;border-left:0;border-right:0;border-bottom:0;text-align:left}
+.list-item:first-child{border-top:0}
+.av{width:40px;height:40px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:800;color:#fff;font-size:15px}
+img.av{object-fit:cover;background:var(--chip);border:2px solid var(--sheet);box-shadow:0 0 0 1.5px var(--line)}
+.photo-edit{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.photo-edit label{cursor:pointer}
+.grow{flex:1;min-width:0}
+.ellipsis{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dots{display:flex;gap:6px;margin:8px 0;align-items:center}
+.dots i{width:24px;height:24px;border-radius:50%;border:2px dashed var(--line)}
+.dots i.on{background:var(--ha);border:2px solid var(--ink)}
+.price{width:100%;border-collapse:collapse;font-size:13px}
+.price td{padding:6px 0;border-top:1.5px dashed var(--line)}
+.price td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.price tr.now td{font-weight:800;color:var(--ha)}
+.price tr.total td{border-top:2px solid var(--ink);font-weight:800;font-size:15px}
+.callout{background:var(--ha-t);padding:10px 14px;border-radius:14px;font-size:14px;margin:10px 0;font-weight:700}
+.callout.ri{background:var(--ri-t)}
+.stars{display:flex;gap:4px}
+.stars button{border:0;background:none;font-size:34px;line-height:1;color:var(--line);padding:0 2px}
+.stars button.on{color:var(--yell)}
+textarea,input[type=text],input[type=search],select.field,input[type=number]{width:100%;border:1.5px solid var(--line);background:var(--sheet);border-radius:14px;padding:10px 12px}
+textarea{min-height:72px;resize:vertical}
+label.f{display:block;font-size:12px;color:var(--ink2);margin:10px 0 4px;font-weight:700}
+.hero{padding:4px 16px 0;text-align:center}
+.hero h1{margin:18px 0 10px;font-size:26px;line-height:1.35}
+.hero-card{background:var(--sheet);border-radius:28px;padding:20px 12px 16px;position:relative}
+.stickers{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:6px}
+.stk{font-size:12px;font-weight:800;border-radius:999px;padding:4px 10px;color:#fff;border:2px solid var(--ink)}
+.stk.shu{background:var(--shu);transform:rotate(-4deg)}.stk.ha{background:var(--ha);transform:rotate(3deg)}.stk.ri{background:var(--ri);transform:rotate(-2deg)}
+.steps{list-style:none;padding:0;margin:0;counter-reset:s}
+.steps li{counter-increment:s;display:flex;gap:12px;padding:10px 0;border-top:1.5px dashed var(--line);align-items:flex-start}
+.steps li:first-child{border-top:0}
+.steps li::before{content:counter(s);font-weight:800;font-size:15px;background:var(--ha);color:#fff;width:28px;height:28px;border-radius:50%;flex:none;display:grid;place-items:center}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 16px}
+.tile{background:var(--sheet);border:1.5px solid var(--line);border-radius:20px;padding:12px 6px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.tile b{font-size:22px;font-weight:800;line-height:1.2}
+.tile span{font-size:11px;color:var(--ink2);font-weight:700}
+.tile:active{transform:scale(.96)}
+.bignum{font-size:34px;font-weight:800;line-height:1.1}
+.bignum small{font-size:15px}
+.mission{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1.5px dashed var(--line);width:100%;background:none;border-left:0;border-right:0;border-bottom:0;text-align:left}
+.mission:first-child{border-top:0}
+.mission .ck{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center;font-size:13px;color:#fff}
+.mission.done .ck{background:var(--ri);border-color:var(--ri)}
+.mission.done .grow{text-decoration:line-through;color:var(--ink2)}
+.bookrow{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--chip);border-radius:14px}
+.icon-x{border:0;background:var(--sheet);width:26px;height:26px;border-radius:50%;flex:none;color:var(--ink2);font-weight:800}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:999px;font-size:13px;z-index:50;max-width:90%;text-align:center;font-weight:700;animation:pop .25s ease both}
+@keyframes pop{from{transform:translate(-50%,10px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+.modal{position:fixed;inset:0;background:rgba(18,19,29,.55);z-index:60;display:grid;place-items:center;padding:20px}
+.modal .sheet{max-width:340px;width:100%;text-align:center;margin:0}
+.grow-anim{animation:growup 1.2s cubic-bezier(.2,.8,.2,1) both;transform-origin:50% 100%}
+@keyframes growup{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}
+.qr{display:grid;grid-template-columns:repeat(11,1fr);width:132px;height:132px;margin:10px auto;gap:1px}
+.qr i{background:var(--ink);border-radius:1px}
+.qr i.o{background:transparent}
+.tbl-wrap{overflow-x:auto}
+.post{padding:12px 0;border-top:1.5px dashed var(--line)}
+.post:first-child{border-top:0}
+.odai{background:var(--ha);color:#fff;border-radius:22px;padding:16px 18px;margin:10px 16px;border:2px solid var(--ink);box-shadow:4px 4px 0 var(--shadow)}
+.odai b{font-size:17px;display:block;margin-top:2px;font-weight:800}
+.lecmode{background:var(--yell);color:#191B2E;font-weight:800}
+
+.hscroll{display:flex;gap:10px;overflow-x:auto;padding:4px 16px 10px;scroll-snap-type:x mandatory;scroll-padding-inline:16px}
+.hscroll>*{scroll-snap-align:start;flex:none}
+.profile{margin:8px 16px 10px;border-radius:26px;padding:18px;background:var(--sheet);position:relative;overflow:hidden}
+.profile::before{content:'';position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:var(--ha-t)}
+.profile::after{content:'';position:absolute;right:40px;top:70px;width:70px;height:70px;border-radius:50%;background:var(--shu-t)}
+.profile>*{position:relative;z-index:1}
+.pstats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:14px;text-align:center}
+.pstats div{background:var(--chip);border-radius:14px;padding:8px 4px}
+.pstats b{display:block;font-size:18px;line-height:1.2}
+.pstats span{font-size:11px;color:var(--ink2);font-weight:700}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 16px}
+.kpi{background:var(--sheet);border:1.5px solid var(--line);border-radius:22px;padding:14px;display:flex;flex-direction:column;gap:4px;text-align:left}
+.kpi .lbl{font-size:12px;color:var(--ink2);font-weight:700}
+.kpi .num{font-size:26px;font-weight:800;line-height:1.1}
+.kpi .num small{font-size:13px}
+.kpi.dark{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.kpi.dark .lbl{color:var(--paper);opacity:.75}
+.heat{display:grid;grid-template-rows:repeat(7,1fr);grid-auto-flow:column;gap:3px}
+.heat i{width:100%;aspect-ratio:1;border-radius:4px;background:var(--chip)}
+.heat i.h1{background:var(--ri);opacity:.35}.heat i.h2{background:var(--ri);opacity:.65}.heat i.h3{background:var(--ri)}
+.tierstep{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.tierstep div{border-radius:14px;padding:10px 6px;text-align:center;background:var(--chip);font-size:11px;font-weight:700;color:var(--ink2)}
+.tierstep div b{display:block;font-size:14px;color:var(--ink)}
+.tierstep div.on{background:var(--ha);color:#fff}
+.tierstep div.on b{color:#fff}
+.friend-tile{display:flex;flex-direction:column;align-items:center;gap:4px;width:72px;border:0;background:none;padding:0;font-size:11px;font-weight:700}
+.friend-tile .plus{width:52px;height:52px;border-radius:50%;border:2px dashed var(--line);display:grid;place-items:center;font-size:22px;color:var(--ink2)}
+details.sheet summary{font-weight:800;cursor:pointer;list-style:none;display:flex;justify-content:space-between}
+details.sheet summary::after{content:'＋';color:var(--ink2)}
+details.sheet[open] summary::after{content:'－'}
+details.sheet[open] summary{margin-bottom:8px}
+.evcard{display:flex;gap:12px;padding:12px 0;border-top:1.5px dashed var(--line);width:100%;background:none;border-left:0;border-right:0;border-bottom:0;text-align:left;align-items:stretch}
+.evcard:first-child{border-top:0}
+.evdate{width:58px;flex:none;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--chip);line-height:1.15;padding:6px 0}
+.evdate b{font-size:22px;font-weight:800}
+.evdate small{font-size:10px;font-weight:700;color:var(--ink2)}
+.evdate.ha{background:var(--ha-t)}.evdate.ha b{color:var(--ha)}
+.evdate.shu{background:var(--shu-t)}.evdate.shu b{color:var(--shu)}
+.evdate.yell{background:rgba(245,158,11,.16)}.evdate.yell b{color:var(--yell)}
+.evtitle{display:block;margin:4px 0 2px;font-size:15px;line-height:1.4}
+.nexthero{margin:10px 16px;border-radius:26px;padding:18px;background:var(--shu);color:#fff;border:2px solid var(--ink);box-shadow:4px 4px 0 var(--shadow);display:block;width:calc(100% - 32px);text-align:left}
+.nexthero .cd{font-size:40px;font-weight:800;line-height:1}
+.nexthero .cd small{font-size:15px}
+.nexthero .tag{background:rgba(255,255,255,.22);color:#fff}
+.todo{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1.5px dashed var(--line);width:100%;background:none;border-left:0;border-right:0;border-bottom:0;text-align:left}
+.todo:first-child{border-top:0}
+.todo .ic{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-size:18px;flex:none}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal .wd{font-size:11px;color:var(--ink2);font-weight:700}
+.cal button{border:0;background:none;border-radius:12px;padding:6px 0 4px;font-size:13px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:44px}
+.cal button.has{background:var(--chip)}
+.cal button.mine{background:var(--ha-t);color:var(--ha)}
+.cal button.sel{background:var(--ink);color:var(--paper)}
+.cal button i{width:6px;height:6px;border-radius:50%;background:var(--ink2)}
+.cal button.mine i{background:var(--ha)}
+.cal button.sel i{background:var(--paper)}
+.tcard{background:var(--sheet);border:1.5px solid var(--line);border-radius:24px;margin:12px 16px;overflow:hidden}
+.tcard .band{padding:14px 16px 12px;color:#fff}
+.tcard .band h3{font-size:19px;margin:2px 0 0;color:#fff}
+.tcard .band .small{opacity:.9;font-weight:700}
+.tcard .body{padding:12px 16px 16px}
+.tstats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center;margin-bottom:12px}
+.tstats div{background:var(--chip);border-radius:12px;padding:6px 2px}
+.tstats b{display:block;font-size:17px;line-height:1.2}
+.tstats span{font-size:10.5px;color:var(--ink2);font-weight:700}
+.stackav{display:flex;align-items:center}
+.stackav>*{margin-left:-8px;border:2px solid var(--sheet)!important}
+.stackav>*:first-child{margin-left:0}
+.qlinks{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
+.qlinks button{border:1.5px solid var(--line);background:var(--sheet);border-radius:12px;padding:8px 2px;font-size:12px;font-weight:800}
+.ccard{width:220px;background:var(--sheet);border:1.5px solid var(--line);border-radius:22px;padding:14px;text-align:left}
+.ring text{font-family:inherit}
+hr{border:0;border-top:1.5px dashed var(--line);margin:12px 0}
+a{color:var(--shu)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app" class="app"></div>
+<script>
+/* ============ データ ============ */
+const AX=[
+{id:'see',name:'見る力',w:'分析的',e:'包括的',wS:'要素に分けて本質を捉える力',eS:'全体と文脈を感じ取る力',wB:'分解すればすべて理解できる',eB:'全体の印象でわかったつもりになる'},
+{id:'self',name:'自己のあり方',w:'個の自己',e:'関係の自己',wS:'自分の意思で立つ力',eS:'関係の中で調和する力',wB:'自分の力だけで成し遂げるべき',eB:'周りに合わせることが優しさ'},
+{id:'judge',name:'判断の拠り所',w:'論理',e:'直観',wS:'根拠と筋道で判断する力',eS:'感覚で違和感を捉える力',wB:'説明できないものは信じない',eB:'感覚が正しければ根拠はいらない'},
+{id:'know',name:'知の形',w:'言語知',e:'身体知',wS:'言葉とデータで伝える力',eS:'体験を通じて身につける力',wB:'理解してからでないと始められない',eB:'言葉にしなくても伝わる'},
+{id:'time',name:'時間の感覚',w:'直線',e:'循環',wS:'目標から逆算して進む力',eS:'過程と瞬間を味わう力',wB:'今は未来のための準備期間',eB:'先のことはなるようになる'},
+{id:'para',name:'矛盾への態度',w:'二項対立',e:'中庸',wS:'白黒をつけて前に進める力',eS:'矛盾を抱えて待てる力',wB:'矛盾は解消すべき誤り',eB:'決めないことで選択肢を残せる'}];
+const AXM=Object.fromEntries(AX.map(a=>[a.id,a]));
+const Q=[
+{ax:'see',dir:'w',t:'問題が起きたら、まず原因を要素に分解して考える'},
+{ax:'see',dir:'e',t:'出来事は、その場の状況や背景と切り離せないと思う'},
+{ax:'self',dir:'w',t:'周りと違っても、自分の意見を貫くのが大事だ'},
+{ax:'self',dir:'e',t:'自分らしさは、関わる人によって変わってよいと思う'},
+{ax:'judge',dir:'w',t:'大事な決断ほど、データや根拠を集めてから決める'},
+{ax:'judge',dir:'e',t:'説明はできないが「何となく違う」という感覚を信じる'},
+{ax:'know',dir:'w',t:'新しいことは、まず本や解説で理解してから始める'},
+{ax:'know',dir:'e',t:'やってみて体で覚えるほうが身につく'},
+{ax:'time',dir:'w',t:'目標から逆算して計画を立てるのが好きだ'},
+{ax:'time',dir:'e',t:'結果よりも、その過程で何を感じたかが大切だ'},
+{ax:'para',dir:'w',t:'議論では、どちらが正しいかはっきりさせたい'},
+{ax:'para',dir:'e',t:'相反する考えが両方正しいこともあると思う'}];
+
+// テーマ: [軸, 方向, 番号, 名前, 手放すこと, 身につけること, 西洋知, 東洋知, 人文知, 日本の知・美, おすすめ体験]
+const TRAW=[
+['see','e',1,'余白を読む','分解すればすべて理解できる、という思い込み','描かれていない部分や沈黙から意味を読み取る力','ゲシュタルト心理学（全体は部分の総和を超える）','老子の「無用の用」（空いているから器は役に立つ）','E・T・ホールのハイコンテクスト文化論','長谷川等伯『松林図屛風』と「間」の美学','美術館で一つの作品を20分眺める'],
+['see','e',2,'文脈で捉える','物事は切り離して評価できる、という思い込み','背景や関係の中で意味を捉える力','システム思考（ドネラ・メドウズ）','仏教の「縁起」','ギアツの「厚い記述」（文化人類学）','和歌の本歌取り','街歩きで土地の歴史を調べる'],
+['see','e',3,'つながりで見る','原因は一つに特定できる、という思い込み','複数の要因がめぐる循環として捉える力','複雑系の科学','華厳経の「インドラの網」','ベイトソン『精神の生態学』','里山の循環と共生','家庭菜園や里山ボランティア'],
+['self','e',1,'間（あいだ）を生きる','自分は他者と切り離された存在だ、という思い込み','関係の中で自分が立ち上がる感覚','ブーバー『我と汝』','儒教の「仁」','ケアの倫理（キャロル・ギリガン）','和辻哲郎の「間柄」としての人間','地域の祭りに参加する'],
+['self','e',2,'利他','成果は自分の努力だけで得たもの、という思い込み','他者のために動くことで自分も満たされる感覚','アダム・グラント『GIVE & TAKE』','大乗仏教の「自利利他」','マルセル・モース『贈与論』','近江商人の「三方よし」','プロボノやボランティア'],
+['self','e',3,'場をつくる','成果は個人の能力で決まる、という思い込み','人が力を発揮できる場を整える力','心理的安全性（エイミー・エドモンドソン）','『論語』の「和して同ぜず」','アーレントの「公共性」','野中郁次郎の「場」の概念','対話会やワークショップの進行役'],
+['judge','e',1,'感性で判断する','数字で説明できないものは判断材料にならない、という思い込み','美しさや違和感を判断に使う力','ダマシオのソマティック・マーカー仮説','禅の「直指人心」','カント『判断力批判』の美的判断','本居宣長の「もののあはれを知る」','季節の和菓子を味わい比べる'],
+['judge','e',2,'場の空気を読む','言葉にされたことだけが事実だ、という思い込み','言外の意図や場の流れを感じ取る力','非言語コミュニケーション研究','『孫子』の「勢」（状況の流れを読む）','ゴッフマンの相互行為論','山本七平『「空気」の研究』を批判的に読む','即興劇（インプロ）'],
+['judge','e',3,'無心になる','考え抜くほど良い答えが出る、という思い込み','考えを手放すことでひらく集中','チクセントミハイの「フロー」','禅の「無心」','ヘリゲル『弓と禅』','沢庵『不動智神妙録』','座禅や弓道の体験'],
+['know','e',1,'型から入る','理解してから始めるべきだ、という思い込み','型をなぞる中で、意味が後からわかる感覚','レイヴとウェンガーの「正統的周辺参加」','『論語』の「学びて時にこれを習う」','ポランニー『暗黙知の次元』','利休道歌に詠まれた稽古の心得','茶道や書道の稽古'],
+['know','e',2,'体で覚える','知識は頭の中にある、という思い込み','身体が先に理解する感覚','メルロ＝ポンティ『知覚の現象学』','ヨーガの伝統','身体化された認知（エンボディメント）研究','世阿弥『風姿花伝』','ピラティスや武道'],
+['know','e',3,'五感をひらく','視覚と言葉で世界はつかめる、という思い込み','音・香り・触感から世界を受け取る力','モンテッソーリの感覚教育','仏教の「六根清浄」','感覚人類学','香道の「聞香（もんこう）」','森林浴や香道の体験'],
+['time','e',1,'いまここを味わう','今は未来のための準備期間だ、という思い込み','目の前の瞬間に注意を置く力','マインドフルネス（ジョン・カバット・ジン）','道元の「而今（にこん）」','マルクス・アウレリウス『自省録』','茶の湯の「一期一会」','マインドフルネス瞑想'],
+['time','e',2,'移ろいを愛でる','変化は避けるべきリスクだ、という思い込み','変わりゆくものに美しさを見る力','ヘラクレイトスの「万物は流転する」','仏教の「諸行無常」','ベルクソンの「持続」','鴨長明『方丈記』と「もののあはれ」','同じ場所を毎週撮り続ける'],
+['time','e',3,'季節とともに生きる','一年中同じペースで成果を出すべきだ、という思い込み','自然のリズムに合わせて緩急をつける力','時間生物学（概日リズム）','二十四節気','エリアーデ『聖と俗』の循環する時間','七十二候と歳時記','季語を使って俳句を詠む'],
+['para','e',1,'中庸を保つ','振り切ってこそ成果が出る、という思い込み','両極の間で、ちょうどいい位置を探る力','アリストテレスの「中庸（メソテース）」','儒教の『中庸』','ヘーゲルの弁証法','「塩梅」の美学','ヨガのバランスポーズ'],
+['para','e',2,'矛盾を抱える','矛盾は解消すべき誤りだ、という思い込み','相反するものを同時に抱えて考える力','キーツの「ネガティブ・ケイパビリティ」','禅の公案','ボーアの相補性','西田幾多郎の「絶対矛盾的自己同一」','禅問答の体験'],
+['para','e',3,'あいまいさを楽しむ','答えははっきりさせるべきだ、という思い込み','決めきらない状態を味わう力','エフェクチュエーション（不確実性下の意思決定）','『荘子』の「胡蝶の夢」','エーコ『開かれた作品』','侘び寂びと「ぼかし」の技法','即興劇（インプロ）'],
+['see','w',1,'分けて考える','全体の印象で判断できる、という思い込み','要素に分けて本質を見抜く力','デカルト『方法序説』の「分割」','仏教の「五蘊」（存在を要素に分けて観る）','レヴィ＝ストロースの構造主義','牧野富太郎の植物分類','時間の使い方を分けて記録する'],
+['see','w',2,'仮説を立てて確かめる','経験と勘でわかっている、という思い込み','仮説を立て、確かめ、直す力','ポパーの反証可能性','朱子学の「格物致知」','クーン『科学革命の構造』','杉田玄白『蘭学事始』','小さな実験を1週間続ける'],
+['see','w',3,'構造化する','思いつきを並べれば伝わる、という思い込み','全体像を階層で整理する力','ミントのピラミッド原則','『易経』の八卦','記号論','川喜田二郎のKJ法','KJ法のワーク'],
+['self','w',1,'自分の声を持つ','周りに合わせることが優しさだ、という思い込み','自分の考えを言葉にして示す力','エマソン『自己信頼』','孟子の「浩然の気」','アーレントの「活動」','福沢諭吉の「独立自尊」','自分の意見を発信する'],
+['self','w',2,'境界線を引く','頼まれたら断らないのが良い人だ、という思い込み','自分と他者の責任を分ける力','アドラー心理学の「課題の分離」','老子の「足るを知る」','セルフケアの倫理','「親しき仲にも礼儀あり」','1週間、断る練習をする'],
+['self','w',3,'主体的に選ぶ','流れに身を任せるのが自然だ、という思い込み','自分の価値観で選び取る力','サルトル「実存は本質に先立つ」','王陽明の「知行合一」','フランクル『夜と霧』（態度を選ぶ自由）','吉野源三郎『君たちはどう生きるか』','価値観カードで優先順位を決める'],
+['judge','w',1,'批判的に問う','権威の言うことは正しい、という思い込み','前提を疑い、根拠を確かめる力','ソクラテスの問答法','仏典『カーラーマ経』（伝聞を鵜呑みにしない）','フランクフルト学派の批判理論','丸山眞男『日本の思想』','ニュースの一次情報をたどる'],
+['judge','w',2,'論証する','伝わらないのは相手の理解不足だ、という思い込み','主張と根拠をつないで示す力','トゥールミン・モデル','仏教論理学（因明）','アリストテレス『弁論術』','福沢諭吉と三田演説館','ディベートに参加する'],
+['judge','w',3,'データで語る','実感こそが真実だ、という思い込み','数字で事実を確かめて伝える力','ナイチンゲールの統計グラフ','『孫子』の「彼を知り己を知れば」','ロスリング『FACTFULNESS』','伊能忠敬の実測地図','自分の行動をデータで可視化する'],
+['know','w',1,'言語化する','感覚は言葉にすると薄まる、という思い込み','暗黙の感覚を伝わる言葉に変える力','アリストテレスの修辞学','孔子の「正名」','ナラティブ・アプローチ','野中郁次郎のSECIモデル、俳句の言葉を削る技法','ジャーナリング'],
+['know','w',2,'体系化する','経験は人それぞれで一般化できない、という思い込み','経験を再現できる知識にまとめる力','リンネの分類体系','李時珍『本草綱目』','ディドロらの『百科全書』','貝原益軒『養生訓』','自分の仕事の手順書をつくる'],
+['know','w',3,'教える・伝える','わかっていれば伝えられる、という思い込み','相手の理解に合わせて伝える力','ファインマン・テクニック','仏教の「対機説法」','フレイレ『被抑圧者の教育学』','吉田松陰の松下村塾','5分間で人に教える会'],
+['time','w',1,'ビジョンを描く','先のことはなるようになる、という思い込み','目指す未来像を言葉と絵にする力','キング牧師の演説「I Have a Dream」','『大学』の「修身斉家治国平天下」','トマス・モア『ユートピア』','渋沢栄一『論語と算盤』','ビジョンボードをつくる'],
+['time','w',2,'逆算して計画する','その日の流れに任せれば進む、という思い込み','ゴールから逆算して段取りを組む力','バックキャスティング','『孫子』の「算多きは勝つ」','ヴェーバー『プロテスタンティズムの倫理と資本主義の精神』','トヨタ生産方式の段取り','90日計画を立てる'],
+['time','w',3,'やり抜く','向いていなければやめればいい、という思い込み','長期の目標に向けて粘り強く続ける力','ダックワース『やり抜く力 GRIT』','『列子』の「愚公山を移す」','カミュ『シーシュポスの神話』','二宮尊徳の「積小為大」','30日チャレンジ'],
+['para','w',1,'決断する','決めないことで選択肢を残せる、という思い込み','不完全な情報でも決めて進む力','意思決定理論（期待効用）','『孫子』の「兵は拙速を聞く」','カエサルの「賽は投げられた」','『葉隠』の覚悟','1日1つ、即決する練習'],
+['para','w',2,'対話で結論を出す','波風を立てないのが大人だ、という思い込み','意見をぶつけ合い、合意に至る力','ハーバード流交渉術','諸子百家の「百家争鳴」','ハーバーマスの熟議','十七条憲法「必ず衆とともに論ずべし」','ファシリテーター付きの会議'],
+['para','w',3,'原理原則を貫く','状況次第で柔軟に変えるのが賢い、という思い込み','ぶれない軸を持って判断する力','カントの定言命法','孟子の「義」','立憲主義','稲盛和夫の「フィロソフィ」','自分の行動指針を10箇条にまとめる']];
+const THEMES=TRAW.map(r=>({id:`${r[0]}-${r[1]}-${r[2]}`,ax:r[0],dir:r[1],name:r[3],un:r[4],re:r[5],W:r[6],E:r[7],H:r[8],J:r[9],ex:r[10]}));
+const TH=id=>THEMES.find(t=>t.id===id);
+
+const LECS=[
+{id:'shiraishi',name:'白石 静',cat:'探究者',title:'大学教授（日本美学）',age:58,themes:['see-e-1','time-e-2','know-e-3'],s:{see:82,self:62,judge:74,know:70,time:80,para:68},rating:4.9,count:34,fee:24000,format:'対面・オンライン',area:'東京（谷中）',yell:23800,bio:'日本美術の「間」を研究しています。屛風や庭を前に、見えないものを読む練習を一緒にしましょう。'},
+{id:'todo',name:'藤堂 玄',cat:'実践者',title:'禅僧（元外資系コンサルタント）',age:46,themes:['judge-e-3','time-e-1','para-e-2'],s:{see:70,self:60,judge:78,know:84,time:86,para:80},rating:4.8,count:41,fee:28000,format:'対面',area:'鎌倉',yell:31200,bio:'10年のコンサル生活のあと出家しました。ロジックの限界と、その先にある静けさについて話します。'},
+{id:'minami',name:'ミナミ',cat:'越境者',title:'ギャルマインド講師',age:22,themes:['self-w-1','para-w-1','know-w-1'],s:{see:40,self:18,judge:62,know:30,time:45,para:22},rating:4.7,count:19,fee:16000,format:'オンライン・対面',area:'渋谷',yell:9800,bio:'口ぐせは「で、あなたはどうしたいの？」。モヤモヤを3分で言葉にするコツを教えます。'},
+{id:'hayase',name:'早瀬 蓮',cat:'越境者',title:'茶人・映像クリエイター',age:25,themes:['know-e-1','see-e-1','know-e-3'],s:{see:76,self:58,judge:70,know:82,time:72,para:60},rating:4.6,count:12,fee:18000,format:'対面',area:'東京（清澄白河）',yell:4200,bio:'茶道歴12年のZ世代です。点前の「型」を入り口に、考えるより先に体が覚える感覚を共有します。'},
+{id:'okochi',name:'大河内 誠',cat:'越境者',title:'元商社マン・シルバー起業家',age:68,themes:['time-w-2','time-w-3','know-w-3'],s:{see:30,self:35,judge:25,know:28,time:15,para:30},rating:4.7,count:22,fee:18000,format:'オンライン・対面',area:'横浜',yell:7600,bio:'40年、逆算で生きてきました。65歳で起業して学んだ「計画は変えてよい」も含めてお伝えします。'},
+{id:'yuzuki',name:'柚木 光',cat:'探究者',title:'データサイエンス研究者',age:34,themes:['judge-w-3','see-w-2','see-w-3'],s:{see:18,self:40,judge:15,know:22,time:30,para:35},rating:4.8,count:27,fee:22000,format:'オンライン',area:'オンライン',yell:12500,bio:'数字は、見えない人の声を届ける道具です。仮説を立てて確かめる楽しさを一緒に味わいましょう。'},
+{id:'saeki',name:'佐伯 蒼',cat:'実践者',title:'庭師',age:51,themes:['see-e-3','time-e-3','know-e-2'],s:{see:88,self:66,judge:72,know:90,time:88,para:70},rating:4.9,count:16,fee:20000,format:'対面',area:'京都・東京',yell:8900,bio:'木は一本では育ちません。庭の手入れを通じて、つながりと季節のリズムを体で感じる会をひらきます。'},
+{id:'takatsuki',name:'高槻 ハル',cat:'実践者',title:'起業家・ファシリテーター',age:37,themes:['self-e-3','para-w-2','time-w-1'],s:{see:55,self:62,judge:45,know:40,time:30,para:38},rating:4.6,count:33,fee:20000,format:'オンライン・対面',area:'東京（渋谷）',yell:11000,bio:'3社を立ち上げ、場づくりの失敗も成功もしてきました。本音で話せて、ちゃんと決まる場のつくり方を。'},
+{id:'kiriya',name:'桐谷 澄',cat:'実践者',title:'ピラティス・身体教育講師',age:41,themes:['know-e-2','para-e-1','judge-e-1'],s:{see:66,self:55,judge:74,know:88,time:64,para:72},rating:4.7,count:29,fee:16000,format:'対面',area:'東京（代々木上原）',yell:9100,bio:'体は頭より先に答えを知っています。呼吸と姿勢から、ちょうどいいバランスを探します。'},
+{id:'shingyoji',name:'真行寺 朔',cat:'探究者',title:'哲学研究者',age:44,themes:['judge-w-1','judge-w-2','para-e-2'],s:{see:32,self:38,judge:20,know:25,time:40,para:60},rating:4.8,count:21,fee:22000,format:'オンライン・対面',area:'東京（本郷）',yell:7300,bio:'当たり前を疑うのが仕事です。ソクラテスから西田幾多郎まで、問いの立て方を一緒に鍛えましょう。'},
+{id:'nana',name:'ナナ',cat:'実践者',title:'コピーライター',age:29,themes:['know-w-1','know-w-2','judge-e-2'],s:{see:48,self:52,judge:58,know:35,time:44,para:50},rating:4.5,count:14,fee:18000,format:'オンライン',area:'オンライン',yell:5400,bio:'空気を読みすぎて言えなかった言葉を、ちゃんと届く言葉に。広告コピーの技術を日常に持ち込みます。'},
+{id:'kuga',name:'久我 あかり',cat:'実践者',title:'華道家',age:72,themes:['time-e-2','time-e-3','self-e-2'],s:{see:80,self:84,judge:76,know:86,time:92,para:78},rating:4.9,count:38,fee:20000,format:'対面',area:'東京（目白）',yell:26400,bio:'花は散るから美しい。50年いけてきた手で、移ろいを愛でる時間を一緒に過ごしましょう。'},
+{id:'oka',name:'岡 さくら',cat:'探究者',title:'文化人類学者',age:42,themes:['see-e-2','self-e-1','see-e-3'],s:{see:84,self:74,judge:62,know:66,time:64,para:70},rating:4.8,count:26,fee:22000,format:'オンライン・対面',area:'東京（三鷹）',yell:10400,bio:'世界20か国でフィールドワークをしてきました。「当たり前」が場所によって変わる面白さを一緒に。'},
+{id:'riku',name:'リク',cat:'越境者',title:'大学生・Z世代インフルエンサー',age:21,themes:['self-w-1','para-w-1','self-w-3'],s:{see:46,self:22,judge:50,know:44,time:40,para:28},rating:4.5,count:9,fee:12000,format:'オンライン',area:'オンライン',yell:6100,bio:'フォロワー8万人。自分の言葉で発信し続けて気づいた「自分で選ぶ」ことの楽しさを話します。'},
+{id:'nishimura',name:'西村 義男',cat:'越境者',title:'元小学校校長・シルバー世代',age:70,themes:['self-e-1','self-e-2','time-e-1'],s:{see:70,self:82,judge:66,know:72,time:78,para:74},rating:4.9,count:18,fee:14000,format:'対面',area:'埼玉（川越）',yell:8200,bio:'38年、子どもたちに教わってきました。人と人の「あいだ」で育つものについて、ゆっくり語り合いましょう。'},
+{id:'kana',name:'KANA',cat:'越境者',title:'ギャル式キャリアコーチ',age:26,themes:['self-w-2','self-w-3','para-w-1'],s:{see:42,self:20,judge:56,know:40,time:38,para:24},rating:4.7,count:24,fee:15000,format:'オンライン・対面',area:'渋谷',yell:9600,bio:'「それ、あなたの仕事？」がモットー。断る力と選ぶ力で、キャリアをギャルっぽく軽くします。'},
+{id:'kagami',name:'加賀美 翔',cat:'実践者',title:'戦略コンサルタント',age:39,themes:['see-w-1','see-w-2','see-w-3'],s:{see:12,self:34,judge:18,know:24,time:22,para:30},rating:4.6,count:31,fee:26000,format:'オンライン',area:'オンライン',yell:7800,bio:'複雑な問題を分けて、仮説を立てて、構造にする。コンサルの基本動作を、日常で使える形でお渡しします。'},
+{id:'sanada',name:'真田 凛',cat:'実践者',title:'弁護士',age:36,themes:['judge-w-2','para-w-3','judge-w-1'],s:{see:28,self:32,judge:14,know:26,time:34,para:22},rating:4.7,count:15,fee:24000,format:'オンライン・対面',area:'東京（丸の内）',yell:5200,bio:'法廷では「なんとなく」は通用しません。根拠でつなぐ論証の型を、やさしく実践的に。'},
+{id:'koike',name:'小池 陽菜',cat:'実践者',title:'臨床心理士',age:33,themes:['self-w-2','self-e-1','para-e-3'],s:{see:60,self:50,judge:62,know:58,time:60,para:72},rating:4.8,count:22,fee:18000,format:'オンライン',area:'オンライン',yell:9900,bio:'人との距離感に悩む方の話を聴いてきました。つながりながら自分を守る、その間合いを一緒に探します。'},
+{id:'joe',name:'ジョー',cat:'越境者',title:'インプロ（即興劇）パフォーマー',age:31,themes:['judge-e-2','para-e-3','judge-e-1'],s:{see:72,self:64,judge:86,know:80,time:70,para:82},rating:4.8,count:28,fee:16000,format:'対面',area:'東京（下北沢）',yell:12100,bio:'台本のない舞台で10年。場の空気を感じて、あいまいさを楽しむワークで体をほぐします。'},
+{id:'morimoto',name:'森本 樹',cat:'実践者',title:'林業家・ネイチャーガイド',age:48,themes:['see-e-3','time-e-3','see-e-2'],s:{see:86,self:68,judge:74,know:88,time:90,para:72},rating:4.9,count:20,fee:18000,format:'対面',area:'奥多摩',yell:7400,bio:'森は100年単位のつながりでできています。山を歩きながら、季節とつながりの見方を体験しましょう。'},
+{id:'hori',name:'堀 未来',cat:'探究者',title:'行動経済学者',age:45,themes:['judge-w-3','see-w-2','judge-w-1'],s:{see:20,self:40,judge:16,know:28,time:36,para:40},rating:4.7,count:17,fee:22000,format:'オンライン',area:'オンライン',yell:6300,bio:'人は思ったより合理的ではありません。自分の思い込みをデータで確かめる実験を一緒にやってみましょう。'},
+{id:'mai',name:'マイ',cat:'越境者',title:'看護師・ママ起業家',age:34,themes:['self-e-2','self-e-3','time-w-3'],s:{see:58,self:72,judge:52,know:62,time:36,para:56},rating:4.8,count:13,fee:14000,format:'オンライン・対面',area:'千葉（船橋）',yell:5800,bio:'夜勤と子育てをしながら起業しました。誰かのために動く力と、やり抜く力の両方を持つコツを話します。'},
+{id:'yoshioka',name:'吉岡 悟',cat:'実践者',title:'剣道七段・高校教員',age:55,themes:['know-e-1','judge-e-3','para-w-3'],s:{see:62,self:48,judge:76,know:88,time:66,para:34},rating:4.8,count:25,fee:16000,format:'対面',area:'東京（町田）',yell:8700,bio:'竹刀を握って45年。型を繰り返すことで生まれる無心と、ぶれない軸について稽古を通じて伝えます。'},
+{id:'yuki',name:'ユウキ',cat:'越境者',title:'プロゲーマー・配信者',age:24,themes:['time-w-1','judge-w-3','para-w-2'],s:{see:30,self:36,judge:24,know:34,time:26,para:32},rating:4.6,count:11,fee:12000,format:'オンライン',area:'オンライン',yell:8800,bio:'勝つためにデータを取り、チームで議論して、次の大会を描く。ゲームで身につけた思考法をシェアします。'},
+{id:'mikami',name:'三上 恵',cat:'実践者',title:'元客室乗務員・接客トレーナー',age:44,themes:['judge-e-2','self-e-3','judge-e-1'],s:{see:74,self:78,judge:80,know:72,time:60,para:66},rating:4.9,count:32,fee:18000,format:'対面・オンライン',area:'東京（羽田）',yell:11700,bio:'機内では言葉になる前のサインを読みます。気配りの正体を、感性と場づくりの両面からひもときます。'},
+{id:'takahashi',name:'高橋 修',cat:'越境者',title:'定年後に大学院で学ぶシルバー世代',age:67,themes:['know-w-2','know-w-3','see-w-1'],s:{see:26,self:44,judge:30,know:20,time:40,para:42},rating:4.6,count:8,fee:10000,format:'オンライン・対面',area:'東京（早稲田）',yell:3900,bio:'40年の現場経験を論文にまとめています。経験を体系化して人に伝える面白さを、同じ学び手として。'},
+{id:'aya',name:'アヤ',cat:'実践者',title:'ヨガ・瞑想講師',age:38,themes:['time-e-1','judge-e-3','para-e-1'],s:{see:72,self:66,judge:82,know:86,time:88,para:80},rating:4.8,count:40,fee:14000,format:'対面・オンライン',area:'鎌倉',yell:14600,bio:'元広告代理店勤務です。忙しい頭をいったん静かにして、いまここに戻る練習を一緒に。'},
+{id:'ishida',name:'石田 航',cat:'実践者',title:'エンジニアリングマネージャー',age:40,themes:['know-w-2','time-w-2','see-w-3'],s:{see:18,self:38,judge:22,know:20,time:18,para:34},rating:4.7,count:19,fee:20000,format:'オンライン',area:'オンライン',yell:6600,bio:'50人の開発組織で、暗黙知を仕組みに変えてきました。手順書、ロードマップ、構造化の実践を。'},
+{id:'noa',name:'ノア',cat:'越境者',title:'アートディレクター（Z世代）',age:23,themes:['see-e-1','know-e-3','see-e-2'],s:{see:88,self:60,judge:84,know:74,time:66,para:70},rating:4.7,count:10,fee:14000,format:'対面',area:'東京（原宿）',yell:7100,bio:'余白の多いデザインで賞をもらいました。何を描かないかを決める感覚を、ワークショップで体験しましょう。'},
+{id:'sugimoto',name:'杉本 千景',cat:'探究者',title:'教育学者',age:50,themes:['know-w-3','know-w-1','time-w-1'],s:{see:34,self:48,judge:30,know:22,time:32,para:46},rating:4.8,count:23,fee:20000,format:'オンライン・対面',area:'東京（文京）',yell:8300,bio:'「わかる」と「伝わる」は別物です。言語化と教え方の研究から、明日使える技を持ち帰ってください。'},
+{id:'ohno',name:'大野 豪',cat:'越境者',title:'元プロ野球選手・起業家',age:41,themes:['time-w-3','time-w-2','para-w-2'],s:{see:36,self:30,judge:40,know:46,time:14,para:30},rating:4.7,count:21,fee:22000,format:'対面・オンライン',area:'東京（神宮前）',yell:13500,bio:'2軍で5年、逆算とやり抜く力で1軍に上がりました。引退後の起業で学んだ、対話で決める力も話します。'},
+{id:'fujii',name:'藤井 美樹',cat:'実践者',title:'調停人・ファシリテーター',age:47,themes:['para-e-1','para-e-2','para-e-3'],s:{see:74,self:70,judge:66,know:64,time:68,para:90},rating:4.9,count:27,fee:20000,format:'オンライン・対面',area:'大阪',yell:9400,bio:'対立する両者のあいだに立つのが仕事です。白黒つけない「ちょうどいい」を探す技術をお伝えします。'},
+{id:'rei',name:'レイ',cat:'越境者',title:'陶芸家・古民家カフェ店主',age:30,themes:['know-e-1','know-e-2','time-e-2'],s:{see:76,self:62,judge:74,know:90,time:84,para:70},rating:4.8,count:12,fee:16000,format:'対面',area:'栃木（益子）',yell:5000,bio:'IT企業を辞めて益子へ。土に触れて、型をなぞり、器が変わっていく時間を一緒に味わいましょう。'},
+{id:'kuwabara',name:'桑原 透',cat:'探究者',title:'社会学者',age:52,themes:['para-w-3','self-w-3','judge-w-2'],s:{see:30,self:30,judge:24,know:26,time:38,para:26},rating:4.6,count:14,fee:20000,format:'オンライン',area:'オンライン',yell:4400,bio:'空気に流されない社会はどう作れるのか。原理原則と主体性について、議論を通じて考えます。'},
+{id:'miho',name:'ミホ',cat:'越境者',title:'ギャル社長（アパレル）',age:28,themes:['self-w-1','see-w-1','self-w-2'],s:{see:30,self:16,judge:44,know:36,time:30,para:26},rating:4.7,count:16,fee:15000,format:'対面・オンライン',area:'東京（渋谷）',yell:10200,bio:'19歳で起業。数字を分けて見る力と、言いたいことを言う力で会社を回しています。ノリよく真面目に。'}];
+const LEC=id=>LECS.find(l=>l.id===id);
+const CAT_ICON={'探究者':'🎓','実践者':'🛠','越境者':'🌱'};
+
+const EXP_CATS=[{id:'mind',name:'心・瞑想',icon:'🧘'},{id:'body',name:'からだ',icon:'🏃'},{id:'jp',name:'日本の文化・芸道',icon:'🍵'},{id:'nature',name:'自然・暮らし',icon:'🌿'},{id:'art',name:'アート・創作',icon:'🎨'},{id:'biz',name:'学び・ビジネス',icon:'💼'},{id:'social',name:'つながり',icon:'🤝'}];
+const EXPS=[
+['zazen','mind','座禅',{judge:10,time:10,para:8}],['mindful','mind','マインドフルネス瞑想',{time:12,judge:6}],['shakyo','mind','写経',{know:8,time:8}],['temple','mind','寺社巡り・御朱印',{time:8,see:6}],['journal','mind','ジャーナリング',{know:-8}],['detox','mind','デジタルデトックス',{time:10}],
+['yoga','body','ヨガ',{know:12,para:6}],['pilates','body','ピラティス',{know:12}],['budo','body','武道（剣道・合気道など）',{know:12,judge:6}],['dance','body','ダンス',{know:10,judge:6}],['run','body','ランニング・マラソン',{time:-8,know:6}],['gym','body','筋トレ',{time:-8,know:4}],['climb','body','登山・トレッキング',{know:8,see:6}],['surf','body','サーフィン・マリンスポーツ',{know:10,time:6}],
+['sado','jp','茶道',{know:10,see:8,time:6}],['kado','jp','華道',{see:10,time:8}],['shodo','jp','書道',{know:10}],['kodo','jp','香道',{know:8,judge:8}],['kimono','jp','着物',{time:6,see:4}],['wagashi','jp','和菓子・和食づくり',{know:8,time:6}],['rakugo','jp','落語・歌舞伎・能の鑑賞',{see:6,judge:6}],['tougei','jp','陶芸',{know:10,para:6}],
+['sauna','nature','サウナ',{know:6,time:6}],['camp','nature','キャンプ',{time:8,know:6}],['garden','nature','家庭菜園・ガーデニング',{time:10,see:6}],['forest','nature','森林浴・自然散策',{time:8,judge:6}],['trip','nature','一人旅',{self:-6,see:6}],['cook','nature','料理',{know:8}],
+['museum','art','美術館巡り',{see:8,judge:6}],['photo','art','写真',{see:8}],['music','art','楽器演奏',{know:10}],['haiku','art','俳句・短歌',{see:8,time:10}],['draw','art','絵を描く',{judge:8,see:6}],['movie','art','映画・演劇鑑賞',{see:6}],
+['logic','biz','ロジカルシンキング研修',{see:-12,judge:-10}],['mba','biz','MBA・資格学習',{see:-8,time:-10}],['debate','biz','ディベート',{para:-12,judge:-8}],['data','biz','データ分析',{judge:-12,see:-8}],['code','biz','プログラミング',{see:-10,know:-6}],['bookclub','biz','読書会',{know:-6,self:4}],['lang','biz','語学学習',{know:-4}],['startup','biz','副業・起業',{time:-8,self:-8}],
+['volunteer','social','ボランティア・プロボノ',{self:10}],['matsuri','social','地域の祭り・行事',{self:8,time:8}],['oshikatsu','social','推し活（ライブ・遠征）',{self:6,judge:6}],['care','social','子育て・介護',{self:8,para:6}]].map(r=>({id:r[0],c:r[1],n:r[2],d:r[3]}));
+const VIA=['創造性','好奇心','判断力','向学心','大局観','勇敢さ','忍耐力','誠実さ','熱意','愛情','親切心','社会的知性','チームワーク','公平さ','リーダーシップ','寛容さ','謙虚さ','思慮深さ','自己調整','審美眼','感謝','希望','ユーモア','スピリチュアリティ'];
+const VIA_M={'判断力':{see:-8,judge:-8},'創造性':{judge:4},'向学心':{know:-5},'大局観':{see:8},'勇敢さ':{self:-5,para:-5},'忍耐力':{time:-6},'誠実さ':{para:-4},'愛情':{self:6},'親切心':{self:6},'社会的知性':{self:5,judge:4},'チームワーク':{self:8},'公平さ':{para:-4},'リーダーシップ':{self:-6,time:-4},'寛容さ':{para:6},'謙虚さ':{self:6,para:4},'思慮深さ':{para:4,judge:-4},'自己調整':{know:3},'審美眼':{judge:6,see:6},'感謝':{self:6,time:4},'希望':{time:-6},'ユーモア':{para:4},'スピリチュアリティ':{time:8,know:6,see:6}};
+const CLIFTON=['達成欲','アレンジ','信念','公平性','慎重さ','規律性','目標志向','責任感','回復志向','活発性','指令性','コミュニケーション','競争性','最上志向','自己確信','自我','社交性','適応性','運命思考','成長促進','共感性','調和性','包含','個別化','ポジティブ','親密性','分析思考','原点思考','未来志向','着想','収集心','内省','学習欲','戦略性'];
+const CLIFTON_M={'分析思考':{see:-10,judge:-10},'目標志向':{time:-10},'未来志向':{time:-8},'戦略性':{see:-6,time:-6},'達成欲':{time:-6},'指令性':{self:-8,para:-6},'自我':{self:-8},'自己確信':{self:-8},'競争性':{self:-6},'最上志向':{para:-4},'規律性':{time:-6},'慎重さ':{judge:-6},'学習欲':{know:-5},'収集心':{know:-6},'内省':{know:-4},'着想':{see:4},'運命思考':{see:10,time:6,self:6},'調和性':{self:8,para:8},'共感性':{self:6,judge:8},'包含':{self:8},'親密性':{self:6},'適応性':{time:8,para:6},'原点思考':{time:4},'回復志向':{see:-4},'信念':{para:-6},'公平性':{para:-4},'アレンジ':{para:4},'個別化':{see:4},'成長促進':{self:4},'社交性':{self:4},'コミュニケーション':{know:-6},'責任感':{self:-4},'活発性':{time:-4}};
+const RIASEC=['現実的（R）','研究的（I）','芸術的（A）','社会的（S）','企業的（E）','慣習的（C）'];
+const RIASEC_M={'現実的（R）':{know:8},'研究的（I）':{see:-8,judge:-6},'芸術的（A）':{judge:8},'社会的（S）':{self:8},'企業的（E）':{time:-6,self:-4},'慣習的（C）':{time:-6,para:-4}};
+const ENNEA_M={1:{para:-8},2:{self:8},3:{time:-8,self:-4},4:{judge:6},5:{know:-8,see:-6},6:{self:4},7:{time:4},8:{self:-8,para:-6},9:{para:8,self:6}};
+const BIG5=[['o','開放性'],['c','誠実性'],['e','外向性'],['a','協調性']];
+const TOOLS=[
+{id:'via',name:'VIA-IS（強み診断）',cost:'無料',kind:'multi',opts:VIA,max:5,hint:'上位5つの強みを選んでください',link:'https://www.viacharacter.org/'},
+{id:'p16',name:'16Personalities',cost:'無料',kind:'type',hint:'MBTIに似た診断ですが、公式のMBTIとは別物です',link:'https://www.16personalities.com/ja'},
+{id:'mbti',name:'MBTI（公式）',cost:'有料',kind:'type',hint:'認定ユーザーから受け取った4文字のタイプ'},
+{id:'clifton',name:'クリフトンストレングス',cost:'有料',kind:'multi',opts:CLIFTON,max:5,hint:'上位5つの資質を選んでください'},
+{id:'big5',name:'ビッグファイブ（IPIP版）',cost:'無料',kind:'big5',hint:'各因子の高・中・低を選んでください',link:'https://bigfive-test.com/'},
+{id:'ennea',name:'エニアグラム',cost:'無料版あり',kind:'one',hint:'1〜9のタイプを選んでください'},
+{id:'riasec',name:'ホランド職業興味（RIASEC）',cost:'無料版あり',kind:'multi',opts:RIASEC,max:3,hint:'上位3つを選んでください'}];
+const RANKS=[{n:'たね',min:0,perk:'はじめの一歩'},{n:'めぶき',min:1000,perk:'イベントの優先席'},{n:'つぼみ',min:5000,perk:'限定テーマカード、講師からのお礼メッセージ'},{n:'まんかい',min:20000,perk:'講師を囲む少人数のお茶会に招待'}];
+const NAMES=['あおい','けんと','さや','りく','ゆい','はると','みお','そうた','ことね','だいき','ひなた','れん','つむぎ','ゆうま','かのん','しゅん','のぞみ','たくみ','あかね','こうき','まな','いつき','ちひろ','ゆずき','Mika','ともや','えみ','Taku','しおり','かずま','Yuna','ひろし','なつみ','Ren','みさき','こうた','さくら','Kei','ふうか','じゅん'];
+const AVC=['#3E5C8A','#C44F6D','#5E8F5A','#8A6A4F','#6B5B95','#B7800F','#2F7F7F'];
+
+/* ============ 状態 ============ */
+const T50=()=>Object.fromEntries(AX.map(a=>[a.id,50]));
+function initState(){return{v:1,persona:'sato',mode:'user',lec:'shiraishi',
+users:{
+sato:{name:'佐藤 健',age:32,job:'総合商社・営業企画',answers:[6,3,6,3,6,3,5,3,6,2,5,3],toolOn:['mbti','clifton'],tools:{mbti:'ESTJ',clifton:['分析思考','目標志向','達成欲','戦略性','指令性']},exps:['logic','mba','run'],target:T50(),themes:['see-e-1','judge-e-3','time-e-1'],hist:[{d:'2026年4月',k:10},{d:'2026年7月',k:5}],rating:4.6,rc:8,sent:1200,bal:3000,plus:false,verified:true,friends:['ono','tanaka','suzuki']},
+ono:{name:'小野 まり',age:29,job:'UIデザイナー',answers:[3,7,4,6,2,6,2,7,3,6,3,6],toolOn:['via','p16'],tools:{via:['審美眼','創造性','好奇心','スピリチュアリティ','親切心'],p16:'INFP'},exps:['sado','yoga','museum','photo'],target:T50(),themes:['know-w-1','time-w-2','judge-w-1'],hist:[{d:'2026年5月',k:8}],rating:4.9,rc:17,sent:5600,bal:1800,plus:true,verified:true,friends:['sato','tanaka','yamada']},
+tanaka:{name:'田中 ゆう',age:38,job:'メーカー人事',answers:[4,5,3,6,5,4,5,5,5,4,4,5],toolOn:['via','big5'],tools:{via:['チームワーク','公平さ','親切心','判断力','希望'],big5:{o:'mid',c:'high',e:'high',a:'high'}},exps:['pilates','journal','volunteer'],target:T50(),themes:['self-w-2','see-w-3','para-w-2'],hist:[{d:'2026年6月',k:6}],rating:4.3,rc:3,sent:300,bal:1200,plus:false,verified:false,friends:['sato','ono']},
+suzuki:{name:'鈴木 陽向',age:21,job:'大学3年生（経済学部）',answers:[5,4,5,3,4,5,4,6,6,3,5,3],toolOn:['p16','riasec'],tools:{p16:'ENTP',riasec:['企業的（E）','芸術的（A）','研究的（I）']},exps:['oshikatsu','dance','startup','lang'],target:T50(),themes:['time-e-1','self-e-1','para-e-3'],hist:[],rating:4.5,rc:5,sent:900,bal:700,plus:false,verified:true,friends:['sato','ono']},
+yamada:{name:'山田 和子',age:66,job:'元看護師長（シルバー世代）',answers:[3,6,2,6,3,5,2,6,4,6,2,6],toolOn:['ennea','big5'],tools:{ennea:2,big5:{o:'mid',c:'high',e:'mid',a:'high'}},exps:['kado','garden','temple','volunteer','care'],target:T50(),themes:['self-w-1','know-w-1','time-w-1'],hist:[{d:'2026年3月',k:9},{d:'2026年6月',k:4}],rating:4.8,rc:21,sent:8200,bal:2400,plus:true,verified:true,friends:['tanaka','ono']},
+new:{name:'あなた',age:null,job:'',answers:Array(12).fill(0),toolOn:[],tools:{},exps:[],target:T50(),themes:[],hist:[],rating:0,rc:0,sent:0,bal:500,plus:false,verified:false,friends:['sato','ono']}},
+events:[
+{id:'ev1',theme:'see-e-1',lec:'shiraishi',title:'松林図屛風から「余白」を読む対話会',status:'voting',joined:6,min:5,max:10,fee:24000,deadline:'あと31時間',by:{sato:1,ono:1,tanaka:1},voted:{},
+ opts:{date:[{id:'d1',l:'10月10日（土）14:00〜16:00',v:3},{id:'d2',l:'10月11日（日）10:00〜12:00',v:2},{id:'d3',l:'10月16日（金）19:30〜21:30',v:1}],format:[{id:'f1',l:'対面',v:4},{id:'f2',l:'オンライン',v:1}],venue:[{id:'v1',l:'谷中の町家スペース（レンタルスペース）',fee:8000,v:3},{id:'v2',l:'上野のギャラリーカフェ（1ドリンク付き）',fee:12000,v:2},{id:'v3',l:'オンライン（ビデオ会議）',fee:0,v:1}]}},
+{id:'ev2',theme:'judge-e-3',lec:'todo',title:'朝の座禅と「無心」の対話',status:'confirmed',joined:7,min:5,max:10,fee:28000,date:'10月4日（日）7:00〜9:00',format:'対面',venue:'鎌倉の寺院（提携スペース）',venueFee:14000,by:{sato:1,ono:1,tanaka:1},paid:{},checked:{}},
+{id:'ev3',theme:'know-w-1',lec:'minami',title:'ギャル式・モヤモヤ言語化ワークショップ',status:'done',joined:8,min:5,max:10,fee:16000,date:'9月20日（日）13:00〜15:00',format:'オンライン',venue:'オンライン',venueFee:0,by:{sato:1,ono:1,tanaka:1},rated:{}},
+{id:'ev4',theme:'time-e-2',lec:'kuga',title:'秋草をいけて「移ろい」を味わう会',status:'proposed',joined:3,min:5,max:8,fee:20000,date:'10月18日（日）10:00〜12:00',format:'対面',venue:'目白の花道教室',venueFee:10000,by:{},paid:{},checked:{}},
+{id:'ev5',theme:'time-w-2',lec:'okochi',title:'65歳起業家と作る「逆算90日計画」',status:'proposed',joined:4,min:5,max:10,fee:18000,date:'10月14日（水）20:00〜21:30',format:'オンライン',venue:'オンライン',venueFee:0,by:{},paid:{},checked:{}},
+{id:'ev6',theme:'self-w-2',lec:'kana',title:'ギャル式・断り方ワークショップ',status:'voting',joined:7,min:5,max:10,fee:15000,deadline:'あと12時間',by:{},voted:{},opts:{date:[{id:'d1',l:'10月9日（金）19:30〜21:00',v:4},{id:'d2',l:'10月12日（月・祝）14:00〜15:30',v:3}],format:[{id:'f1',l:'対面',v:2},{id:'f2',l:'オンライン',v:5}],venue:[{id:'v1',l:'渋谷のコワーキングスペース',fee:6000,v:2},{id:'v3',l:'オンライン（ビデオ会議）',fee:0,v:5}]}},
+{id:'ev7',theme:'see-w-3',lec:'ishida',title:'モヤモヤを構造化する90分',status:'voting',joined:5,min:5,max:12,fee:20000,deadline:'あと40時間',by:{},voted:{},opts:{date:[{id:'d1',l:'10月15日（木）20:00〜21:30',v:3},{id:'d2',l:'10月17日（土）10:00〜11:30',v:2}],format:[{id:'f2',l:'オンライン',v:5}],venue:[{id:'v3',l:'オンライン（ビデオ会議）',fee:0,v:5}]}},
+{id:'ev8',theme:'time-e-3',lec:'morimoto',title:'奥多摩の森で「季節」を歩く',status:'proposed',joined:6,min:6,max:10,fee:18000,date:'11月3日（火・祝）9:00〜13:00',format:'対面',venue:'奥多摩駅集合（森の散策路）',venueFee:0,by:{},paid:{},checked:{}},
+{id:'ev9',theme:'para-e-3',lec:'joe',title:'台本なしで話そう：インプロ入門',status:'proposed',joined:2,min:5,max:12,fee:16000,date:'10月21日（水）19:30〜21:30',format:'対面',venue:'下北沢の小劇場スタジオ',venueFee:9000,by:{},paid:{},checked:{}},
+{id:'ev10',theme:'self-e-1',lec:'nishimura',title:'元校長と語る「人のあいだ」の話',status:'proposed',joined:4,min:5,max:8,fee:14000,date:'10月27日（火）14:00〜16:00',format:'対面',venue:'川越の古民家カフェ（1ドリンク付き）',venueFee:8000,by:{},paid:{},checked:{}},
+{id:'ev11',theme:'judge-w-3',lec:'yuki',title:'プロゲーマー流・データで勝つ思考法',status:'proposed',joined:3,min:5,max:15,fee:12000,date:'10月20日（火）21:00〜22:00',format:'オンライン',venue:'オンライン',venueFee:0,by:{},paid:{},checked:{}},
+{id:'ev12',theme:'know-e-1',lec:'rei',title:'益子で器をつくる：型から入る陶芸',status:'confirmed',joined:6,min:5,max:8,fee:16000,date:'10月11日（日）11:00〜15:00',format:'対面',venue:'益子の古民家工房',venueFee:12000,by:{},paid:{},checked:{}},
+{id:'ev13',theme:'time-e-1',lec:'aya',title:'朝ヨガと「いまここ」ジャーナル',status:'confirmed',joined:9,min:5,max:12,fee:14000,date:'10月10日（土）7:30〜9:00',format:'対面',venue:'由比ヶ浜のヨガスタジオ',venueFee:10000,by:{suzuki:1},paid:{},checked:{}},
+{id:'ev14',theme:'self-w-1',lec:'riku',title:'自分の声で発信しよう：SNS言語化講座',status:'done',joined:10,min:5,max:10,fee:12000,date:'9月13日（日）15:00〜16:30',format:'オンライン',venue:'オンライン',venueFee:0,by:{yamada:1,suzuki:1},rated:{}},
+{id:'ev15',theme:'para-e-1',lec:'fujii',title:'対立のあいだに立つ：中庸の対話術',status:'done',joined:7,min:5,max:10,fee:20000,date:'9月6日（日）13:00〜15:00',format:'対面',venue:'梅田のレンタルスペース',venueFee:9000,by:{tanaka:1},rated:{}}],
+interest:{'hayase|know-e-1':{n:4,by:{}}},posts:{},photos:{},lecYell:{},lecRatings:{},
+nav:{tab:'home',view:'home',p:{}},stack:[],ui:{show:{shu:true,ha:true,ri:true},pick:null,vote:{},rate:{},yellAmt:300,evSeg:'voting',comSeg:'timeline'},toast:'',modal:null}}
+const S_KEY='oshibana-mock-v4';
+let state=null;
+try{state=JSON.parse(localStorage.getItem(S_KEY))}catch(e){state=null}
+if(!state||state.v!==1)state=initState();
+state.photos=state.photos||{};
+function save(){try{localStorage.setItem(S_KEY,JSON.stringify(state));return true}catch(e){return false}}
+
+/* ============ ユーティリティ ============ */
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function hash(s){let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function rng(seed){let x=(seed%2147483646)+1;return()=>{x=(x*16807)%2147483647;return(x-1)/2147483646}}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const yen=n=>Math.round(n).toLocaleString('ja-JP')+'円';
+const me=()=>state.users[state.persona];
+const ev=id=>state.events.find(e=>e.id===id);
+const avatar=(name,size=40,key)=>{const ph=key&&state.photos&&state.photos[key];if(ph)return`<img class="av" src="${ph}" alt="${esc(name)}" style="width:${size}px;height:${size}px">`;return avatarText(name,size)};
+const avatarText=(name,size)=>`<span class="av" style="width:${size}px;height:${size}px;font-size:${Math.round(size*.38)}px;background:${AVC[hash(name)%AVC.length]}">${esc(String(name).slice(0,1))}</span>`;
+
+/* ============ スコア計算 ============ */
+function addD(acc,d,k=1){for(const a in d)acc[a]=(acc[a]||0)+d[a]*k}
+function qScores(u){if(!u.answers||u.answers.some(v=>!v))return null;const s={};AX.forEach(a=>{const vs=[];Q.forEach((q,i)=>{if(q.ax===a.id){const v=u.answers[i];vs.push(q.dir==='e'?(v-1)/6*100:(7-v)/6*100)}});s[a.id]=vs.reduce((x,y)=>x+y,0)/vs.length});return s}
+function toolFilled(u,id){const v=(u.tools||{})[id];if(!v)return false;if(Array.isArray(v))return v.length>0;if(typeof v==='object')return Object.keys(v).length>0;return true}
+function toolScores(u){const on=(u.toolOn||[]).filter(t=>toolFilled(u,t));if(!on.length)return null;const d={};on.forEach(t=>{const v=u.tools[t];
+ if(t==='via')v.forEach(x=>addD(d,VIA_M[x]||{}));
+ if(t==='clifton')v.forEach(x=>addD(d,CLIFTON_M[x]||{}));
+ if(t==='riasec')v.forEach(x=>addD(d,RIASEC_M[x]||{}));
+ if(t==='ennea')addD(d,ENNEA_M[v]||{});
+ if(t==='mbti'||t==='p16'){const s=String(v);if(s[1]==='N')addD(d,{see:8});if(s[1]==='S')addD(d,{see:-6});if(s[2]==='T')addD(d,{judge:-8,self:-4});if(s[2]==='F')addD(d,{judge:6,self:8});if(s[3]==='J')addD(d,{time:-8,para:-6});if(s[3]==='P')addD(d,{time:8,para:6})}
+ if(t==='big5'){if(v.o==='high')addD(d,{see:6,para:6});if(v.o==='low')addD(d,{see:-4});if(v.c==='high')addD(d,{time:-8});if(v.c==='low')addD(d,{time:6});if(v.e==='high')addD(d,{self:-4});if(v.a==='high')addD(d,{self:8,para:4});if(v.a==='low')addD(d,{self:-6})}
+});return Object.fromEntries(AX.map(a=>[a.id,clamp(50+(d[a.id]||0),8,92)]))}
+function bookScores(u){const xs=(u.exps||[]).map(id=>EXPS.find(x=>x.id===id)).filter(Boolean);if(!xs.length)return null;const d={};xs.forEach(it=>addD(d,it.d,.8));return Object.fromEntries(AX.map(a=>[a.id,clamp(50+(d[a.id]||0),8,92)]))}
+function compute(u){const q=qScores(u),t=toolScores(u),b=bookScores(u);const src=[[q,50],[t,25],[b,25]].filter(x=>x[0]);if(!src.length)return null;const tw=src.reduce((s,x)=>s+x[1],0);const s={};AX.forEach(a=>{s[a.id]=Math.round(src.reduce((acc,x)=>acc+x[0][a.id]*x[1],0)/tw)});
+ const nt=(u.toolOn||[]).filter(x=>toolFilled(u,x)).length,nb=(u.exps||[]).length;
+ const conf=(q?50:0)+Math.min(25,nt*13)+Math.min(25,nb*5);return{s,conf,q:!!q,t:!!t,b:!!b}}
+function plan(u,s){return AX.map(a=>({ax:a,dev:s[a.id]-(u.target[a.id]??50)})).sort((x,y)=>Math.abs(y.dev)-Math.abs(x.dev)).slice(0,3).map(d=>({...d,dir:d.dev<0?'e':'w',strong:d.dev<0?'w':'e'}))}
+function candidates(u,s){return plan(u,s).flatMap(p=>THEMES.filter(t=>t.ax===p.ax.id&&t.dir===p.dir))}
+function pastScores(s,k){return Object.fromEntries(AX.map(a=>[a.id,clamp(s[a.id]+(s[a.id]>=50?k:-k),4,96)]))}
+function reach(u,s){return Math.round(AX.reduce((x,a)=>x+Math.max(0,100-Math.abs(s[a.id]-(u.target[a.id]??50))*2),0)/AX.length)}
+function inBand(u,s){return AX.filter(a=>Math.abs(s[a.id]-(u.target[a.id]??50))<=15).length}
+function lean(s){const avg=AX.reduce((x,a)=>x+s[a.id],0)/AX.length;return avg<42?'西洋的な型が強めです':avg>58?'東洋的な型が強めです':'両利きに近い型です'}
+function tier(u){if(u.rating>=4.8&&u.rc>=15)return 2;if(u.rating>=4.5&&u.rc>=5)return 1;return 0}
+function platformFee(u){return u.plus?0:500*(1-[0,.2,.5][tier(u)])}
+function perPerson(e,n,venueFee,u){const lec=e.fee/n,ven=venueFee/n*(tier(u)===2?.9:1),pf=platformFee(u);return{lec,ven,pf,total:lec+ven+pf}}
+function lecRate(l){if(l.rating>=4.8&&l.count>=30)return .10;if(l.rating>=4.5&&l.count>=10)return .12;return .15}
+function stageOf(total){let i=0;RANKS.forEach((r,k)=>{if(total>=r.min)i=k});return i}
+function lecYell(l){return l.yell+(state.lecYell[l.id]||0)}
+function match(u,l,themeId){const t=TH(themeId);let m=0;if(l.themes.includes(themeId))m+=45;const v=l.s[t.ax];m+=(t.dir==='e'?v:100-v)/100*30;m+=clamp((l.rating-4)*20,0,20);if(u.plus)m+=4;return Math.min(99,Math.round(m))}
+function members(themeId){const r=rng(hash(themeId));const pool=[...NAMES];const list=[];for(let i=0;i<12;i++){const k=Math.floor(r()*pool.length);const name=pool.splice(k,1)[0];const s={};AX.forEach(a=>s[a.id]=Math.round(15+r()*70));list.push({name,s})}return list}
+function memberCount(themeId){return 40+hash(themeId)%160+(me().themes.includes(themeId)?1:0)}
+function interest(key){if(!state.interest[key])state.interest[key]={n:hash(key)%4,by:{}};return state.interest[key]}
+
+/* ============ SVG ============ */
+const pol=(r,t)=>`${(r*Math.cos(t)).toFixed(1)} ${(r*Math.sin(t)).toFixed(1)}`;
+const angE=i=>(-75+30*i)*Math.PI/180;
+function petal(L,t){L=Math.max(L,7);const w=.42;return`M0 0 Q${pol(L*.62,t-w)} ${pol(L,t)} Q${pol(L*.62,t+w)} 0 0Z`}
+function sector(r1,r2,t,sp){r1=Math.max(r1,.5);return`M${pol(r1,t-sp)} L${pol(r2,t-sp)} A${r2} ${r2} 0 0 1 ${pol(r2,t+sp)} L${pol(r1,t+sp)} A${r1} ${r1} 0 0 0 ${pol(r1,t-sp)}Z`}
+function flower(s,o={}){const R=118,show=o.show||{shu:1,ha:0,ri:0},labels=o.labels!==false;let g='';
+ g+=`<circle class="guide" r="${R}"/><circle class="guide mid" r="${R/2}"/>`;
+ AX.forEach((a,i)=>{const te=angE(i);g+=`<line class="guide" x1="${pol(R,te+Math.PI).split(' ')[0]}" y1="${pol(R,te+Math.PI).split(' ')[1]}" x2="${pol(R,te).split(' ')[0]}" y2="${pol(R,te).split(' ')[1]}"/>`});
+ if(show.ri&&o.target){AX.forEach((a,i)=>{const te=angE(i),t=o.target[a.id],lo=clamp(t-15,0,100),hi=clamp(t+15,0,100);g+=`<path class="ri-band" d="${sector(lo*R/100,hi*R/100,te,.19)}"/><path class="ri-band" d="${sector((100-hi)*R/100,(100-lo)*R/100,te+Math.PI,.19)}"/>`})}
+ const petals=(sc,cls)=>AX.map((a,i)=>{const te=angE(i);const d1=`<path class="${cls}" style="animation-delay:${i*50}ms" d="${petal(sc[a.id]*R/100,te)}"/>`;const d2=`<path class="${cls}" style="animation-delay:${i*50+25}ms" d="${petal((100-sc[a.id])*R/100,te+Math.PI)}"/>`;return d1+d2}).join('');
+ if(show.shu)g+=petals(s,'p-shu');
+ if(show.ha){const m=Object.fromEntries(AX.map(a=>[a.id,100-s[a.id]]));g+=petals(m,'p-ha')}
+ if(show.ri&&o.target)g+=petals(o.target,'p-ri');
+ if(o.friend)g+=petals(o.friend,'p-fr');
+ g+=`<circle r="4" fill="var(--ink)"/>`;
+ if(labels){AX.forEach((a,i)=>{const te=angE(i);[[te,a.e],[te+Math.PI,a.w]].forEach(([t,txt])=>{const c=Math.cos(t);const anc=c>.3?'start':c<-.3?'end':'middle';const [x,y]=pol(R+12,t).split(' ');g+=`<text class="lbl" x="${x}" y="${(+y+4).toFixed(1)}" text-anchor="${anc}">${txt}</text>`})});
+  g+=`<text class="side" x="-196" y="-150" style="fill:var(--shu)">◀ 西洋的</text><text class="side" x="196" y="-150" text-anchor="end" style="fill:var(--ha)">東洋的 ▶</text>`}
+ const vb=labels?'-200 -168 400 336':'-126 -126 252 252';
+ return`<svg class="flower ${o.bloom?'bloom':''}" viewBox="${vb}" width="${o.size||320}" role="img" aria-label="${esc(o.aria||'思考タイプの花')}">${g}</svg>`}
+function logo(){let g='';for(let i=0;i<6;i++){const t=i*Math.PI/3-Math.PI/2;g+=`<path d="${petal(10,t)}" fill="${i%2?'var(--ha)':'var(--shu)'}" opacity=".85"/>`}return`<svg viewBox="-12 -12 24 24" aria-hidden="true">${g}<circle r="2" fill="var(--paper)"/></svg>`}
+function stageIcon(st,size=56,anim=false){let g='';
+ if(st===0)g=`<ellipse cx="0" cy="18" rx="9" ry="6" fill="var(--seed)"/><path d="M-22 26 H22" stroke="var(--line)" stroke-width="2"/>`;
+ if(st>=1)g+=`<path d="M-22 26 H22" stroke="var(--line)" stroke-width="2"/><path d="M0 26 V${st===1?6:-2}" stroke="var(--ri)" stroke-width="2.5" fill="none"/>`;
+ if(st===1)g+=`<path d="M0 10 Q-14 0 -16 12 Q-6 16 0 10Z M0 8 Q12 -4 16 8 Q6 14 0 8Z" fill="var(--ri)"/>`;
+ if(st===2)g+=`<path d="M0 16 Q-12 10 -12 18 Q-5 22 0 16Z" fill="var(--ri)"/><path d="M0 -2 Q-9 -10 0 -24 Q9 -10 0 -2Z" fill="var(--ha)"/>`;
+ if(st===3){g+=`<path d="M0 16 Q-12 10 -12 18 Q-5 22 0 16Z" fill="var(--ri)"/>`;for(let i=0;i<6;i++){const t=i*Math.PI/3;g+=`<path transform="translate(0 -10)" d="${petal(15,t)}" fill="var(--ha)" opacity=".85"/>`}g+=`<circle cx="0" cy="-10" r="3.5" fill="var(--yell)"/>`}
+ return`<svg viewBox="-28 -30 56 60" width="${size}" height="${size*60/56}" class="${anim?'grow-anim':''}" aria-hidden="true">${g}</svg>`}
+function qrSvg(seed){const r=rng(hash(seed));let h='';for(let i=0;i<121;i++){const x=i%11,y=Math.floor(i/11);const finder=(x<3&&y<3)||(x>7&&y<3)||(x<3&&y>7);h+=`<i class="${finder||r()>.5?'':'o'}"></i>`}return`<div class="qr" aria-label="チェックイン用コード（デモ）">${h}</div>`}
+const TAB_ICON={home:'<path d="M4 11l8-6 8 6v9h-5v-6H9v6H4z"/>',shuhari:'<path d="M12 12 Q9 6 12 2 Q15 6 12 12Z M12 12 Q18 10 21 13 Q16 16 12 12Z M12 12 Q6 10 3 13 Q8 16 12 12Z M12 12 V22"/>',comm:'<circle cx="8" cy="9" r="3.2"/><circle cx="16.5" cy="9" r="3.2"/><path d="M2.5 20c.8-3.5 3-5 5.5-5s4.7 1.5 5.5 5M11 20c.8-3.5 3-5 5.5-5s4.7 1.5 5.5 5"/>',events:'<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',mypage:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.2-6.5 8-6.5s7 2 8 6.5"/>'};
+
+/* ============ ナビゲーション ============ */
+function go(view,p={}){state.stack.push(JSON.parse(JSON.stringify(state.nav)));state.nav={tab:state.nav.tab,view,p};render();window.scrollTo(0,0)}
+function tab(t){state.stack=[];state.nav={tab:t,view:t,p:{}};render();window.scrollTo(0,0)}
+function back(){const prev=state.stack.pop();if(prev){state.nav=prev;render();window.scrollTo(0,0)}}
+function toast(msg){state.toast=msg;render();clearTimeout(toast.t);toast.t=setTimeout(()=>{state.toast='';const el=document.querySelector('.toast');if(el)el.remove()},2600)}
+
+/* ============ 共通パーツ ============ */
+function topbar(){const u=state.mode==='user';return`<header class="top">${state.stack.length?'<button class="icon" data-act="back" aria-label="戻る">‹</button>':''}<div class="brand">${logo()}<span>オシバナ</span></div><div class="top-r">${u?`<select data-chg="persona" aria-label="デモユーザーを切り替える">${Object.entries(state.users).map(([k,v])=>`<option value="${k}" ${k===state.persona?'selected':''}>${k==='new'?'新規ユーザー':esc(v.name)}</option>`).join('')}</select>`:''}<button class="mode" data-act="mode">${u?'講師側':'ユーザー側'}</button></div></header>`}
+function tabbar(){if(state.mode!=='user')return'';const items=[['home','ホーム'],['shuhari','診断結果'],['comm','推しコミュ'],['events','イベント'],['mypage','マイページ']];return`<nav class="tabs" aria-label="メインメニュー">${items.map(([k,l])=>`<button data-act="tab:${k}" ${state.nav.tab===k?'aria-current="page"':''}><svg viewBox="0 0 24 24">${TAB_ICON[k]}</svg>${l}</button>`).join('')}</nav>`}
+function lecRow(l,themeId){const u=me();return`<button class="list-item" data-act="go:circle:${l.id}:${themeId}">${avatar(l.name,44,'l:'+l.id)}<div class="grow"><div class="row between"><b>${esc(l.name)}</b>${themeId?`<span class="tag ha">マッチ度 ${match(u,l,themeId)}%</span>`:''}</div><div class="muted ellipsis">${CAT_ICON[l.cat]} ${l.cat}｜${esc(l.title)}</div><div class="small muted">★${l.rating}（${l.count}回）・${esc(l.format)}・${esc(l.area)}</div></div></button>`}
+const TODAY=new Date(2026,8,27);
+const AXCOL={see:'#3D5AFE',self:'#FF3D7F',judge:'#F59E0B',know:'#0DAA7B',time:'#8B5CF6',para:'#0EA5E9'};
+function evDate(e){let str=e.date||'';if(e.status==='voting'){str=[...e.opts.date].sort((a,b)=>b.v-a.v)[0].l}const m=str.match(/(\d+)月(\d+)日（([^）]+)）/);if(!m)return null;const dt=new Date(2026,+m[1]-1,+m[2]);return{m:+m[1],d:+m[2],w:m[3],time:(str.split('）').slice(1).join('）')||'').trim(),tentative:e.status==='voting',days:Math.round((dt-TODAY)/864e5),ts:+dt}}
+function evFormat(e){return e.status==='voting'?[...e.opts.format].sort((a,b)=>b.v-a.v)[0].l:e.format}
+function ring(pct,color,size=72,stroke=9,inner=''){const r=(size-stroke)/2,c=2*Math.PI*r;return`<svg class="ring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--chip)" stroke-width="${stroke}"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${(c*clamp(pct,0,100)/100).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 ${size/2} ${size/2})"/><text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" style="font-size:${Math.round(size*.24)}px;font-weight:800;fill:var(--ink)">${inner}</text></svg>`}
+function myEvents(){return state.events.filter(e=>e.by&&e.by[state.persona])}
+function todos(){const per=state.persona;const out=[];myEvents().forEach(e=>{if(e.status==='voting'&&!e.voted[per])out.push({ic:'🗳',bg:'var(--ha-t)',t:'日程と場所を投票する',e,act:`go:vote:${e.id}`});if(e.status==='confirmed'&&!(e.paid&&e.paid[per]))out.push({ic:'💳',bg:'var(--shu-t)',t:'事前決済を済ませる',e,act:`go:event:${e.id}`});if(e.status==='done'&&!(e.rated&&e.rated[per]))out.push({ic:'⭐',bg:'rgba(245,158,11,.16)',t:'講師を評価する',e,act:`go:event:${e.id}`})});return out}
+function heatHtml(u){const r=rng(hash(state.persona+'heat'));const base=Math.min(.9,(u.rc+u.sent/800)/18);let cells='',recent=0;for(let w=0;w<14;w++)for(let d=0;d<7;d++){const v=r()<base*.55?1+Math.floor(r()*3):0;if(w>=10&&v)recent++;cells+=`<i class="h${v}"></i>`}return{cells,recent}}
+function eventCard(e){const t=TH(e.theme),l=LEC(e.lec),dt=evDate(e);const st={voting:['投票中','ha'],proposed:['募集中','yell'],confirmed:['開催確定','shu'],done:['開催済み','']}[e.status];const mine=e.by&&e.by[state.persona];const online=evFormat(e)==='オンライン';const cap=Math.min(100,e.joined/e.max*100);
+ return`<button class="evcard" data-act="go:${e.status==='voting'?'vote':'event'}:${e.id}"><div class="evdate ${st[1]}">${dt?`<small>${dt.m}月</small><b>${dt.d}</b><small>${esc(dt.w)}${dt.tentative?'・仮':''}</small>`:'<b>-</b>'}</div><div class="grow"><div class="row" style="gap:5px;flex-wrap:wrap"><span class="tag ${st[1]}">${st[0]}</span>${mine?'<span class="tag ri">参加中</span>':''}<span class="tag">${online?'💻 オンライン':'📍 対面'}</span></div><b class="evtitle">${esc(e.title)}</b><div class="row small muted" style="gap:6px">${avatar(l.name,22,'l:'+l.id)}<span class="ellipsis">${esc(l.name)}・${esc(t.name)}</span></div><div class="row" style="gap:8px;margin-top:6px"><div class="meter ha" style="flex:1;height:6px"><span style="width:${cap}%"></span></div><span class="small" style="font-weight:800;white-space:nowrap">${e.joined}/${e.max}人</span></div></div></button>`}
+function photoPicker(key,hint){const has=state.photos[key];return`<div class="photo-edit"><label class="btn ghost sm">📷 ${has?'写真を変更':'写真を登録'}<input type="file" accept="image/*" data-photo="${key}" hidden></label>${has?`<button class="btn ghost sm" data-act="photoDel:${key}">写真を削除</button>`:''}</div>${hint?`<p class="small muted" style="margin-top:6px">${hint}</p>`:''}`}
+function toThumb(file){return new Promise((res,rej)=>{if(!file||!file.type.startsWith('image/'))return rej(new Error('type'));const fr=new FileReader();fr.onload=()=>{const img=new Image();img.onload=()=>{const S=240,c=document.createElement('canvas');c.width=c.height=S;const k=Math.min(img.width,img.height);c.getContext('2d').drawImage(img,(img.width-k)/2,(img.height-k)/2,k,k,0,0,S,S);res(c.toDataURL('image/jpeg',.82))};img.onerror=rej;img.src=fr.result};fr.onerror=rej;fr.readAsDataURL(file)})}
+function confMeter(r){return`<div class="row between small"><span>診断の確からしさ</span><b>${r.conf}%</b></div><div class="meter"><span style="width:${r.conf}%"></span></div>`}
+
+/* ============ 画面：ユーザー ============ */
+const V={};
+V.welcome=()=>{const demo={see:78,self:44,judge:66,know:72,time:38,para:60};return`<section class="hero"><div class="hero-card pop">${flower(demo,{labels:false,size:190,show:{shu:1,ha:1,ri:0},aria:'オシバナの花'})}<div class="stickers"><span class="stk shu">いまの私</span><span class="stk ha">伸ばす方向</span><span class="stk ri">目指す私</span></div></div><h1>自分の「型」を知って、<br>推し仲間と学び直そう</h1><p class="muted">3分の診断で、あなたの考え方のクセを花のチャートに。伸ばしたい方向の講師と、同じ目標の仲間が見つかります。</p></section>
+<div class="sheet"><ol class="steps"><li><div><b>診断する</b><p class="muted small">12問のクイック診断と、手持ちの診断結果・最近の体験から「いまの私」を描きます。</p></div></li><li><div><b>推しテーマを選ぶ</b><p class="muted small">伸ばしたい方向から、学びたいテーマを最大3つ選びます。</p></div></li><li><div><b>仲間と集まる</b><p class="muted small">5人集まれば、日時や場所を投票で決めて開催。人数が増えるほど安くなります。</p></div></li></ol></div>
+<div class="pad"><button class="btn ha full big" data-act="go:diag">無料で診断スタート</button><p class="muted small" style="text-align:center;margin-top:10px">18歳以上が対象・約3分</p></div>`};
+V.home=()=>{const u=me(),r=compute(u);if(!r)return V.welcome();const st=stageOf(u.sent);const next=state.events.find(e=>e.by&&e.by[state.persona]&&(e.status==='confirmed'||e.status==='voting'));const th=u.themes[0]?TH(u.themes[0]):null;const rc=reach(u,r.s);const nEv=state.events.filter(e=>e.by&&e.by[state.persona]&&e.status!=='done').length;const mis=u.mis||{};
+ const missions=[['post','今週のお題に投稿する','+10pt',th?`go:community:${th.id}`:'go:pick'],['circle','推しサークルをのぞく','+5pt',th?`go:community:${th.id}`:'go:pick'],['yell','仲間にエールを送る','花が育つ',th?`go:community:${th.id}`:'go:pick']];
+ return`<div class="pad row" style="margin-top:6px"><button data-act="tab:mypage" aria-label="マイページ" style="border:0;background:none;padding:0">${avatar(u.name,52,'u:'+state.persona)}</button><div><p class="muted small" style="margin:0">おかえりなさい</p><h1 style="margin:0">${esc(u.name)}さん</h1></div></div>
+ <div class="sheet pop"><div class="row" style="gap:6px;align-items:center">${flower(r.s,{labels:false,size:140,show:{shu:1,ha:0,ri:1},target:u.target})}<div class="grow"><span class="tag shu">${lean(r.s)}</span><div class="bignum" style="margin-top:6px">${rc}<small>%</small></div><div class="small muted" style="font-weight:700">目指す私への到達度</div><div class="meter ri" style="margin:6px 0 10px"><span style="width:${rc}%"></span></div><button class="btn sm" data-act="tab:shuhari">診断結果を見る</button></div></div></div>
+ <div class="tiles"><button class="tile" data-act="tab:comm"><b>${u.themes.length}</b><span>推しテーマ</span></button><button class="tile" data-act="tab:events"><b>${nEv}</b><span>参加予定の会</span></button><button class="tile" data-act="tab:mypage"><b>${u.bal.toLocaleString()}</b><span>エールpt</span></button></div>
+ <h2>今日のミッション</h2><div class="sheet">${missions.map(([k,l,b,act])=>`<button class="mission ${mis[k]?'done':''}" data-act="${act}"><span class="ck">${mis[k]?'✓':''}</span><span class="grow" style="font-weight:700">${l}</span><span class="tag yell">${b}</span></button>`).join('')}</div>
+ <h2>推しテーマ</h2>${u.themes.length?`<div class="pad chips">${u.themes.map(id=>`<button class="chip" data-act="go:theme:${id}">${esc(TH(id).name)}</button>`).join('')}</div>`:`<div class="sheet"><p>まだ推しテーマがありません。</p><button class="btn sm ha" data-act="go:pick">推しテーマを選ぶ</button></div>`}
+ ${next?`<h2>次のイベント</h2><div class="sheet">${eventCard(next)}</div>`:''}
+ <h2>あなたの花</h2><div class="sheet row">${stageIcon(st,52)}<div class="grow"><b>${RANKS[st].n}</b><div class="small muted">送ったエール累計 ${u.sent.toLocaleString()}pt</div>${st<3?`<div class="meter yell" style="margin-top:6px"><span style="width:${Math.min(100,(u.sent-RANKS[st].min)/(RANKS[st+1].min-RANKS[st].min)*100)}%"></span></div><div class="small muted">「${RANKS[st+1].n}」まであと${(RANKS[st+1].min-u.sent).toLocaleString()}pt</div>`:''}</div></div>
+ ${th?`<div class="odai"><span class="small" style="font-weight:700">今週のお題・${esc(th.name)}</span><b>「${esc(th.name)}」を感じた瞬間を、写真か一言で</b><button class="btn sm ghost" style="margin-top:10px" data-act="go:community:${th.id}">投稿しにいく</button></div>`:''}`};
+
+V.diag=()=>{const u=me(),r=compute(u);const qd=u.answers.every(v=>v),nt=(u.toolOn||[]).filter(x=>toolFilled(u,x)).length,nb=u.exps.length;
+ const card=(act,title,desc,done,req)=>`<button class="list-item" data-act="go:${act}"><div class="grow"><div class="row" style="gap:6px"><b>${title}</b>${req?'<span class="tag ha">必須</span>':'<span class="tag">任意</span>'}</div><div class="small muted">${desc}</div></div><span class="tag ${done?'ri':''}">${done?'入力済み':'未入力'}</span></button>`;
+ return`<h1>診断する</h1><p class="lead">1つだけでも診断できます。入力が増えるほど、診断の確からしさが上がります。</p>
+ <div class="sheet">${r?confMeter(r):confMeter({conf:0})}</div>
+ <div class="sheet">${card('dq','クイック診断','12問・約3分。直感でタップするだけ',qd,true)}${card('dtools','自己分析ツールの結果',nt?`${nt}件入力済み`:'VIA、16Personalities、ストレングスなど',nt>0,false)}${card('dbooks','体験・習慣',nb?`${nb}件選択済み`:'最近の体験やハマっていること',nb>0,false)}</div>
+ <div class="pad"><button class="btn ha full" data-act="analyze" ${r?'':'disabled'}>結果を見る</button>${r?'':'<p class="small muted" style="text-align:center;margin-top:8px">まずは独自簡易診断から始めてください</p>'}</div>`};
+V.dq=()=>{const u=me();const i=clamp(state.ui.qi||0,0,11),q=Q[i];const n=u.answers.filter(v=>v).length;const labels=['全くそう思わない','そう思わない','あまりそう思わない','どちらでもない','ややそう思う','そう思う','とてもそう思う'];
+ return`<h1>クイック診断</h1><p class="lead">直感でタップしてください。正解はありません。</p><div class="qdots">${Q.map((_,k)=>`<button class="${k===i?'cur':''} ${u.answers[k]?'done':''}" data-act="qNav:${k}" aria-label="質問${k+1}へ"></button>`).join('')}</div>
+ <div class="sheet pop qcard"><span class="tag">Q${i+1}／12・${AXM[q.ax].name}</span><p class="qtext">${esc(q.t)}</p><div class="scale" role="radiogroup" aria-label="${esc(q.t)}">${[1,2,3,4,5,6,7].map(v=>{const sz=[42,36,30,26,30,36,42][v-1];const side=v<4?'l':v>4?'r':'';return`<button role="radio" aria-checked="${u.answers[i]===v}" aria-label="${labels[v-1]}" class="${side} ${u.answers[i]===v?'on':''}" style="width:${sz}px;height:${sz}px" data-act="ans:${i}:${v}">${u.answers[i]===v?'✓':''}</button>`}).join('')}</div><div class="scale-ends"><span>そう思わない</span><span>そう思う</span></div></div>
+ <div class="pad row between"><button class="btn ghost sm" data-act="qNav:${i-1}" ${i===0?'disabled':''}>前へ</button><span class="small muted" style="font-weight:700">${n}/12 回答済み</span>${n===12?'<button class="btn sm ha" data-act="back">完了</button>':`<button class="btn ghost sm" data-act="qNav:${i+1}" ${i===11?'disabled':''}>次へ</button>`}</div>`};
+V.dtools=()=>{const u=me();const on=u.toolOn||[];return`<h1>自己分析ツールの結果</h1><p class="lead">受けたことのあるツールを選び、結果を入力してください。</p>
+ <div class="sheet"><h3>受けたことがない方へ</h3><p class="small muted">無料で受けられる次の診断がおすすめです。結果が出たら、ここに戻って入力してください。</p><div class="chips"><a class="chip" href="https://www.viacharacter.org/" target="_blank" rel="noopener">VIA-IS（強み・無料）</a><a class="chip" href="https://www.16personalities.com/ja" target="_blank" rel="noopener">16Personalities（無料）</a><a class="chip" href="https://bigfive-test.com/" target="_blank" rel="noopener">ビッグファイブ（無料）</a></div></div>
+ <div class="sheet"><h3>ツールを選ぶ</h3><div class="chips">${TOOLS.map(t=>`<button class="chip ${on.includes(t.id)?'on':''}" data-act="toolOn:${t.id}">${esc(t.name)}<span class="small">（${t.cost}）</span></button>`).join('')}</div></div>
+ ${TOOLS.filter(t=>on.includes(t.id)).map(t=>`<div class="sheet"><h3>${esc(t.name)}</h3><p class="small muted">${esc(t.hint)}</p>${toolForm(u,t)}</div>`).join('')}
+ <div class="pad"><button class="btn full" data-act="back">保存して戻る</button></div>`};
+function toolForm(u,t){const v=u.tools[t.id];
+ if(t.kind==='multi'){const sel=v||[];return`<div class="small muted" style="margin-bottom:6px">${sel.length}/${t.max}選択中</div><div class="chips">${t.opts.map(o=>`<button class="chip ${sel.includes(o)?'on':''}" data-act="toolPick:${t.id}:${o}">${esc(o)}</button>`).join('')}</div>`}
+ if(t.kind==='type'){const s=v||'____';const pairs=[['E','I'],['S','N'],['T','F'],['J','P']];return pairs.map((p,i)=>`<div class="row" style="margin:6px 0"><span class="small muted" style="width:64px">${['外向/内向','感覚/直観','思考/感情','判断/知覚'][i]}</span>${p.map(ch=>`<button class="chip ${s[i]===ch?'on':''}" data-act="toolType:${t.id}:${i}:${ch}">${ch}</button>`).join('')}</div>`).join('')+`<div class="small">現在のタイプ：<b>${esc(v||'未選択')}</b></div>`}
+ if(t.kind==='big5'){const b=v||{};return BIG5.map(([k,n])=>`<div class="row" style="margin:6px 0"><span class="small muted" style="width:64px">${n}</span>${[['low','低'],['mid','中'],['high','高']].map(([lv,l])=>`<button class="chip ${b[k]===lv?'on':''}" data-act="toolBig:${k}:${lv}">${l}</button>`).join('')}</div>`).join('')}
+ if(t.kind==='one'){return`<div class="chips">${[1,2,3,4,5,6,7,8,9].map(n=>`<button class="chip ${v===n?'on':''}" data-act="toolOne:${t.id}:${n}">タイプ${n}</button>`).join('')}</div>`}return''}
+V.dbooks=()=>{const u=me();return`<h1>体験・習慣</h1><p class="lead">最近の体験や、ハマっていることを選んでください。いくつでも選べます。</p>
+ <div class="sheet"><div class="row between"><h3 style="margin:0">✨ 最近の体験・習慣</h3><span class="tag ha">${u.exps.length}個選択中</span></div>${EXP_CATS.map(c=>`<div class="small" style="font-weight:800;margin:14px 0 6px">${c.icon} ${c.name}</div><div class="chips">${EXPS.filter(x=>x.c===c.id).map(x=>`<button class="chip ${u.exps.includes(x.id)?'on':''}" data-act="exp:${x.id}">${esc(x.n)}</button>`).join('')}</div>`).join('')}</div>
+ <div class="pad"><button class="btn full" data-act="back">保存して戻る</button></div>`};
+V.analyze=()=>`<div class="hero" style="padding-top:70px">${stageIcon(1,96,true)}<h1 style="font-size:22px">あなたの花を咲かせています</h1><p class="muted">回答・診断結果・体験を6つの軸に重ねています</p></div>`;
+
+V.shuhari=()=>{const u=me(),r=compute(u);if(!r)return V.welcome();const sh=state.ui.show,pl=plan(u,r.s),top=pl.map(p=>p.ax.id);const bloom=state.ui.bloom;state.ui.bloom=false;const rc=reach(u,r.s);
+ const bars=AX.map(a=>{const s=r.s[a.id],t=u.target[a.id],lo=clamp(t-15,0,100),hi=clamp(t+15,0,100),isTop=top.includes(a.id),gap=Math.abs(s-t),inb=gap<=15;const from=Math.min(s,t),w=gap;
+  return`<div class="axis"><div class="row between"><b style="font-size:14px">${a.name}</b>${inb?'<span class="tag ri">ゴール圏内 ✓</span>':`<span class="tag ${isTop?'ha':''}">目標まであと${gap-15}${isTop?'・伸ばしどころ':''}</span>`}</div><div class="ends"><span>${a.w}</span><span>${a.e}</span></div><div class="track"><div class="base"></div><div class="band" style="left:${lo}%;width:${hi-lo}%"></div>${!inb?`<div class="arrow" style="left:${from}%;width:${w}%"></div>`:''}<div class="goal" style="left:${t}%" title="目標 ${t}"></div><div class="dot" style="left:${s}%" title="いま ${s}"></div></div><label class="small muted" style="display:flex;gap:8px;align-items:center;font-weight:700"><span style="white-space:nowrap">目標を動かす</span><input type="range" min="0" max="100" value="${t}" data-chg="target:${a.id}" aria-label="${a.name}の目標"></label></div>`}).join('');
+ const past=(u.hist||[]).map(h=>({d:h.d,s:pastScores(r.s,h.k)}));past.push({d:'いま',s:r.s});
+ return`<h1>診断結果</h1><p class="lead">いまの私を知り、反対側を伸ばして、両方を使える私へ。</p>
+ <div class="srl"><button class="srl-i shu" data-act="solo:shu" style="border:0"><b>1</b><span>いまの私</span><small>これまでの型</small></button><i>→</i><button class="srl-i ha" data-act="solo:ha" style="border:0"><b>2</b><span>伸ばす方向</span><small>反対側の型</small></button><i>→</i><button class="srl-i ri" data-act="solo:ri" style="border:0"><b>3</b><span>目指す私</span><small>両方を使える</small></button></div>
+ <div class="tiles"><div class="tile"><b>${rc}%</b><span>目指す私への到達度</span></div><div class="tile"><b>${inBand(u,r.s)}/6</b><span>ゴール圏内の軸</span></div><div class="tile"><b>${r.conf}%</b><span>診断の確からしさ</span></div></div>
+ <div class="sheet pop"><div class="chips" style="justify-content:center;margin-bottom:6px"><button class="chip shu ${sh.shu?'on':''}" data-act="show:shu">いまの私</button><button class="chip ha ${sh.ha?'on':''}" data-act="show:ha">伸ばす方向</button><button class="chip ri ${sh.ri?'on':''}" data-act="show:ri">目指す私</button></div>${flower(r.s,{show:sh,target:u.target,bloom,size:400})}
+ <div class="legend"><span><i style="background:var(--shu)"></i>いまの私</span><span><i style="border:2px dashed var(--ha)"></i>伸ばす方向</span><span><i style="border:2.5px solid var(--ri)"></i>目指す私</span></div>
+ <div class="callout ri" style="margin-top:12px">緑の線が「目指す私」のかたちです。はじめは全ての軸が真ん中（西洋も東洋も使える状態）に設定されています。青い花びらが緑の線に近づくほど、目指す私に近づいています。</div></div>
+ <h2>軸ごとの対比</h2><div class="sheet"><div class="track-key"><span><i style="width:12px;height:12px;border-radius:50%;background:var(--shu)"></i>いま</span><span><i style="width:5px;height:14px;border-radius:2px;background:var(--ri)"></i>目標</span><span><i style="width:18px;height:10px;border-radius:5px;background:var(--ri-t)"></i>ゴール圏</span><span><i style="width:18px;height:3px;background:var(--ha)"></i>伸ばす距離</span></div>${bars}<p class="small muted" style="margin-top:8px">目標は自由に動かせます。「この軸はあえて東洋寄りを目指す」といった調整もできます。</p></div>
+ <h2>ことばにすると</h2>
+ <div class="pair"><div class="sheet card-shu"><h3>いまの私</h3><p class="small muted">これまで磨いてきた強み</p><ul class="kv">${pl.map(p=>`<li>${p.strong==='w'?p.ax.wS:p.ax.eS}</li>`).join('')}</ul></div>
+ <div class="sheet card-ha"><h3>伸ばす方向</h3><p class="small muted">手放すことと身につけること</p><ul class="kv">${pl.map(p=>`<li><b>手放す</b>「${p.strong==='w'?p.ax.wB:p.ax.eB}」<br><b style="margin-top:4px">身につける</b>${p.strong==='w'?p.ax.eS:p.ax.wS}</li>`).join('')}</ul></div></div>
+ <div class="sheet card-ri"><h3>目指す私</h3><p class="small muted">いまの強みを捨てるのではなく、伸ばす方向と組み合わせて使える状態</p><ul class="kv">${pl.map(p=>{const a=p.ax;const keep=p.strong==='w'?a.wS:a.eS,add=p.strong==='w'?a.eS:a.wS;return`<li>${keep}を活かしながら、<b style="display:inline;font-size:14px;color:var(--ri)">${add}</b>も使える</li>`}).join('')}</ul></div>
+ <h2>成長ログ</h2><div class="sheet"><div class="hist">${past.map(h=>`<figure>${flower(h.s,{labels:false,size:88,show:{shu:1,ri:1},target:u.target})}<figcaption>${esc(h.d)}<br>到達度 ${reach(u,h.s)}%</figcaption></figure>`).join('')}</div><p class="small muted">3か月ごとの再診断で、花の形の変化を記録します。</p></div>
+ <div class="pad" style="margin-top:16px"><button class="btn ha full big" data-act="go:pick">推しテーマを選ぶ</button></div>`};
+
+V.pick=()=>{const u=me(),r=compute(u);if(!r)return V.welcome();const max=u.plus?5:3;if(!state.ui.pick)state.ui.pick=[...u.themes];const sel=state.ui.pick;const pl=plan(u,r.s);
+ return`<h1>推しテーマを選ぶ</h1><p class="lead">伸ばしどころの3つの軸から、9つのテーマを候補にしました。最大${max}つまで選べます${u.plus?'（推しプラス）':''}。</p><div class="sheet"><div class="row between"><span>選択中</span><b>${sel.length}/${max}</b></div></div>
+ ${pl.map(p=>`<h2 style="font-size:16px">${p.ax.name}：${p.dir==='e'?p.ax.e:p.ax.w}側へ伸ばす</h2><div class="sheet">${THEMES.filter(t=>t.ax===p.ax.id&&t.dir===p.dir).map(t=>`<div class="opt ${sel.includes(t.id)?'on':''}" style="cursor:default"><button class="box" data-act="pickT:${t.id}" aria-label="${esc(t.name)}を選ぶ" style="background:${sel.includes(t.id)?'var(--ink)':'transparent'};color:var(--paper)">${sel.includes(t.id)?'✓':''}</button><div class="grow"><b>${esc(t.name)}</b><div class="small muted">${esc(t.re)}</div><div class="small muted">仲間 ${memberCount(t.id)}人・講師 ${LECS.filter(l=>l.themes.includes(t.id)).length}人</div></div><button class="btn ghost sm" data-act="go:theme:${t.id}">詳細</button></div>`).join('')}</div>`).join('')}
+ <div class="pad"><button class="btn ha full" data-act="savePick" ${sel.length?'':'disabled'}>推しテーマを決定する</button></div>`};
+
+V.theme=p=>{const t=TH(p.id),u=me(),a=AXM[t.ax];const mine=u.themes.includes(t.id);const lecs=LECS.filter(l=>l.themes.includes(t.id));
+ return`<p class="lead" style="margin-top:16px">${a.name}・${t.dir==='e'?a.e:a.w}側へ伸ばすテーマ</p><h1 style="margin-top:0">${esc(t.name)}</h1>
+ <div class="pair"><div class="sheet card-shu"><h3>手放すこと</h3><p class="small">${esc(t.un)}</p></div><div class="sheet card-ha"><h3>身につけること</h3><p class="small">${esc(t.re)}</p></div></div>
+ <h2>4つのレンズ</h2><div class="mandala"><div class="qd q1"><b>西洋知</b>${esc(t.W)}</div><div class="qd q2"><b>東洋知</b>${esc(t.E)}</div><div class="qd q3"><b>人文知</b>${esc(t.H)}</div><div class="qd q4"><b>日本の知・美</b>${esc(t.J)}</div><div class="core">${esc(t.name)}</div></div>
+ <div class="sheet"><h3>おすすめの体験</h3><p class="small">${esc(t.ex)}</p></div>
+ <h2>推し講師</h2><div class="sheet">${lecs.length?lecs.map(l=>lecRow(l,t.id)).join(''):'<p class="small muted">このテーマの講師を募集中です。講師として登録すると、最初の推し講師になれます。</p>'}</div>
+ <div class="sheet row between"><div><b>${memberCount(t.id)}人</b><div class="small muted">がこのテーマを推しています</div></div><button class="btn ghost sm" data-act="go:community:${t.id}">推しコミュを見る</button></div>
+ <div class="pad"><button class="btn ${mine?'ghost':'ha'} full" data-act="toggleTheme:${t.id}">${mine?'推しテーマから外す':'推しテーマに追加する'}</button></div>`};
+
+V.comm=()=>{const u=me(),r=compute(u);const my=u.themes;const lecSet=new Set();my.forEach(id=>LECS.filter(l=>l.themes.includes(id)).forEach(l=>lecSet.add(l.id)));const totalM=my.reduce((x,id)=>x+memberCount(id),0);const openEv=state.events.filter(e=>my.includes(e.theme)&&(e.status==='voting'||e.status==='proposed')).length;
+ const hot=[];my.forEach(id=>LECS.filter(l=>l.themes.includes(id)).forEach(l=>{const it=interest(l.id+'|'+id);if(it.n<5)hot.push({l,id,n:it.n})}));hot.sort((a,b)=>b.n-a.n);
+ const rec=r?candidates(u,r.s).filter(t=>!my.includes(t.id)).slice(0,6):[];
+ const card=id=>{const t=TH(id),a=AXM[t.ax];const lecs=LECS.filter(l=>l.themes.includes(id));const ms=members(id).slice(0,5);const evs=state.events.filter(e=>e.theme===id&&e.status!=='done');const best=lecs.map(l=>({l,it:interest(l.id+'|'+id)})).sort((x,y)=>y.it.n-x.it.n)[0];
+  return`<div class="tcard"><div class="band" style="background:${AXCOL[t.ax]}"><span class="small">${a.name}・${t.dir==='e'?a.e:a.w}側へ伸ばす</span><h3>${esc(t.name)}</h3></div><div class="body">
+  <div class="tstats"><div><b>${memberCount(id)}</b><span>仲間</span></div><div><b>${lecs.length}</b><span>推し講師</span></div><div><b>${evs.length}</b><span>開催予定</span></div></div>
+  <div class="row between"><div><div class="small muted" style="font-weight:700">推し講師</div><div class="stackav">${lecs.map(l=>avatar(l.name,34,'l:'+l.id)).join('')}</div></div><div style="text-align:right"><div class="small muted" style="font-weight:700">仲間</div><div class="stackav" style="justify-content:flex-end">${ms.map(m=>avatar(m.name,30)).join('')}<span class="tag" style="margin-left:4px;border:0!important">+${memberCount(id)-5}</span></div></div></div>
+  ${best?`<button class="callout" style="display:block;width:100%;text-align:left;border:0;margin-top:12px" data-act="go:circle:${best.l.id}:${id}"><div class="row between"><span>🔥 ${esc(best.l.name)}のサークル</span><b>${Math.min(best.it.n,5)}/5人</b></div><div class="meter ha" style="margin-top:6px;background:var(--sheet)"><span style="width:${Math.min(best.it.n,5)*20}%"></span></div><div class="small" style="margin-top:4px">${best.it.n>=5?'投票が始まっています':`あと${5-best.it.n}人で開催の投票が始まります`}</div></button>`:''}
+  <div class="small muted" style="margin-top:10px;font-weight:700">今週のお題：「${esc(t.name)}」を感じた瞬間を、写真か一言で</div>
+  <div class="qlinks"><button data-act="comGo:${id}:timeline">💬 タイムライン</button><button data-act="comGo:${id}:nakama">👥 仲間</button><button data-act="comGo:${id}:circle">🎪 サークル</button></div></div></div>`};
+ return`<h1>推しコミュ</h1><p class="lead">同じテーマを推す仲間と講師が集まる場所です。</p>
+ <div class="tiles" style="grid-template-columns:repeat(4,1fr)"><div class="tile"><b>${my.length}</b><span>推しテーマ</span></div><div class="tile"><b>${totalM}</b><span>仲間</span></div><div class="tile"><b>${lecSet.size}</b><span>推し講師</span></div><div class="tile"><b>${openEv}</b><span>募集・投票</span></div></div>
+ ${hot.length?`<h2>もうすぐ開催が決まるサークル</h2><div class="hscroll">${hot.slice(0,6).map(h=>`<button class="ccard" data-act="go:circle:${h.l.id}:${h.id}"><div class="row">${avatar(h.l.name,40,'l:'+h.l.id)}<div class="grow"><b class="ellipsis" style="display:block">${esc(h.l.name)}</b><span class="small muted ellipsis" style="display:block">${esc(TH(h.id).name)}</span></div></div><div class="dots" style="margin:10px 0 4px">${[0,1,2,3,4].map(i=>`<i class="${i<h.n?'on':''}" style="width:18px;height:18px"></i>`).join('')}</div><span class="small" style="font-weight:800">あと${5-h.n}人で投票開始</span></button>`).join('')}</div>`:''}
+ <h2>わたしの推しテーマ</h2>${my.length?my.map(card).join(''):`<div class="sheet"><p>推しテーマを選ぶと、ここにコミュニティが表示されます。</p><button class="btn sm ha" data-act="go:pick">推しテーマを選ぶ</button></div>`}
+ ${rec.length?`<h2>あなたへのおすすめテーマ</h2><div class="hscroll">${rec.map(t=>`<button class="ccard" style="width:180px" data-act="go:theme:${t.id}"><span class="tag" style="background:${AXCOL[t.ax]};color:#fff">${AXM[t.ax].name}</span><b style="display:block;margin:6px 0 2px">${esc(t.name)}</b><span class="small muted" style="display:block">${esc(t.re)}</span><span class="small" style="font-weight:800">仲間 ${memberCount(t.id)}人</span></button>`).join('')}</div>`:''}
+ <details class="sheet"><summary>すべてのテーマを見る（36）</summary>${AX.map(a=>`<div style="margin-top:12px"><b style="color:${AXCOL[a.id]}">${a.name}</b><div class="small muted" style="margin:4px 0">${a.e}側へ</div><div class="chips">${THEMES.filter(t=>t.ax===a.id&&t.dir==='e').map(t=>`<button class="chip ${u.themes.includes(t.id)?'on':''}" data-act="go:theme:${t.id}">${esc(t.name)}</button>`).join('')}</div><div class="small muted" style="margin:8px 0 4px">${a.w}側へ</div><div class="chips">${THEMES.filter(t=>t.ax===a.id&&t.dir==='w').map(t=>`<button class="chip ${u.themes.includes(t.id)?'on':''}" data-act="go:theme:${t.id}">${esc(t.name)}</button>`).join('')}</div></div>`).join('')}</details>`};
+
+function genPosts(t){const m=members(t.id);const ls=LECS.filter(x=>x.themes.includes(t.id));const l=ls[0],l2=ls[1]||ls[0];const r=rng(hash(t.id+'posts'));
+ const pool=[
+ `通勤路の植え込みを5分だけ眺めてみた。「${t.name}」って、こういう小さな時間から始まるのかもしれない。`,
+ l?`${l.name}さんのサークルに参加表明しました。あと少しで投票が始まりそう。`:'このテーマの講師、誰か来てほしいな。',
+ `テーマカードにあった「${t.J}」、週末に調べてみます。`,
+ `今週のおすすめ体験「${t.ex}」をやってみた。思ったより難しいけど楽しい。`,
+ `会議で「${t.re.replace(/力$|感覚$/,'')}」を意識したら、いつもと違う意見が出てきた。`,
+ `「${t.un.replace('、という思い込み','')}」って、自分のことだと気づいてちょっと笑った。`,
+ l2?`${l2.name}さんの話、録画でもいいから見たい。次の会、日程合うといいな。`:'次の会、日程合うといいな。',
+ `同じテーマを推してる人が${memberCount(t.id)}人もいるの心強い。`,
+ `${t.W}と${t.E}が同じことを言ってる気がする。東西で表現が違うだけ？`];
+ const times=['12分前','1時間前','3時間前','5時間前','昨日','昨日','2日前','3日前'];
+ const idx=[...pool.keys()].sort(()=>r()-.5).slice(0,6);
+ return idx.map((k,i)=>({name:m[i].name,text:pool[k],time:times[i],yell:Math.floor(r()*40)}))}
+V.community=p=>{const t=TH(p.id),u=me(),r=compute(u);const seg=state.ui.comSeg;const lecs=LECS.filter(l=>l.themes.includes(t.id));
+ let body='';
+ if(seg==='timeline'){const posts=[...(state.posts[t.id]||[]),...genPosts(t)];body=`<div class="odai"><span class="small">今週のお題</span><b>「${esc(t.name)}」を感じた瞬間を、写真か一言で</b></div><div class="sheet"><textarea placeholder="気づきや学びを共有する" data-id="post" aria-label="投稿内容"></textarea><div class="row between" style="margin-top:8px"><span class="small muted">投稿するとエール10ptがもらえます</span><button class="btn sm" data-act="post:${t.id}">投稿する</button></div></div><div class="sheet">${posts.map(x=>`<div class="post"><div class="row">${avatar(x.name,32,x.key)}<b>${esc(x.name)}</b><span class="small muted">${esc(x.time)}</span></div><p style="margin:6px 0 4px">${esc(x.text)}</p><div class="small" style="color:var(--yell)">エール ${x.yell||0}</div></div>`).join('')}</div>`}
+ if(seg==='nakama'){const ms=members(t.id);const withD=r?ms.map(m=>({...m,d:Math.sqrt(AX.reduce((x,a)=>x+(m.s[a.id]-r.s[a.id])**2,0)/6)})).sort((a,b)=>a.d-b.d):ms.map(m=>({...m,d:0}));
+  const row=m=>`<div class="list-item">${flower(m.s,{labels:false,size:40})}<div class="grow"><b>${esc(m.name)}</b><div class="small muted">型の近さ ${Math.max(5,Math.round(100-m.d*1.4))}%</div></div><button class="btn ghost sm" data-act="go:yell:peer:${m.name}">エール</button></div>`;
+  body=`<h2 style="font-size:16px">同志：タイプが近い仲間</h2><p class="lead">同じ場所から、同じ方向を目指しています。</p><div class="sheet">${withD.slice(0,5).map(row).join('')}</div><h2 style="font-size:16px">補い合う仲間：タイプが違う仲間</h2><p class="lead">あなたの伸ばしどころを、すでに持っているかもしれません。</p><div class="sheet">${withD.slice(-5).reverse().map(row).join('')}</div><div class="pad"><button class="btn ghost full" data-act="invite">友達をこのテーマに招待する</button></div>`}
+ if(seg==='circle'){const props=state.events.filter(e=>e.theme===t.id&&(e.status==='proposed'||e.status==='voting'));body=`<p class="lead">推しサークルは「講師×テーマ」の小さな場です。参加表明が5人集まると、開催の投票が始まります。</p><div class="sheet">${lecs.length?lecs.map(l=>{const it=interest(l.id+'|'+t.id);return`<button class="list-item" data-act="go:circle:${l.id}:${t.id}">${avatar(l.name,44,'l:'+l.id)}<div class="grow"><b>${esc(l.name)}のサークル</b><div class="small muted">${CAT_ICON[l.cat]} ${esc(l.title)}</div><div class="dots" style="margin:4px 0 0">${[0,1,2,3,4].map(i=>`<i class="${i<Math.min(5,it.n)?'on':''}" style="width:14px;height:14px"></i>`).join('')}<span class="small muted">${Math.min(it.n,5)}/5</span></div></div><span class="muted">›</span></button>`}).join(''):'<p class="small muted">講師を募集中です。</p>'}</div>${props.length?`<h2 style="font-size:16px">開催中の投票・講師からの提案</h2><div class="sheet">${props.map(eventCard).join('')}</div>`:''}`}
+ return`<p class="lead" style="margin-top:16px">推しコミュ</p><h1 style="margin-top:0">${esc(t.name)}</h1><p class="lead">仲間 ${memberCount(t.id)}人・講師 ${lecs.length}人</p><div class="seg">${[['timeline','タイムライン'],['nakama','仲間'],['circle','推しサークル']].map(([k,l])=>`<button class="${seg===k?'on':''}" data-act="comSeg:${k}">${l}</button>`).join('')}</div>${body}`};
+
+V.circle=p=>{const l=LEC(p.lec),t=TH(p.theme),u=me(),r=compute(u);const key=l.id+'|'+t.id,it=interest(key);const done=it.by[state.persona];const evc=state.events.find(e=>e.circle===key);const props=state.events.filter(e=>e.lec===l.id&&e.status==='proposed');const st=stageOf(lecYell(l));
+ return`<div class="sheet" style="margin-top:16px"><div class="row">${avatar(l.name,64,'l:'+l.id)}<div class="grow"><h1 style="margin:0;font-size:22px">${esc(l.name)}</h1><div class="small muted">${CAT_ICON[l.cat]} ${l.cat}｜${esc(l.title)}・${l.age}歳</div><div class="small">★${l.rating}（${l.count}回開催）<span class="tag ri">本人確認済み</span></div></div></div><p style="margin-top:10px">${esc(l.bio)}</p><div class="chips">${l.themes.map(id=>`<button class="chip ${id===t.id?'on':''}" data-act="go:theme:${id}">${esc(TH(id).name)}</button>`).join('')}</div><hr><div class="small muted">講師料の目安 ${yen(l.fee)}／回（参加者で割り勘）・${esc(l.format)}・${esc(l.area)}</div></div>
+ <div class="sheet"><div class="row between"><h3>あなたとの相性</h3><span class="tag ha">マッチ度 ${match(u,l,t.id)}%</span></div><div class="row" style="justify-content:space-around">${r?`<figure style="margin:0;text-align:center">${flower(r.s,{labels:false,size:110})}<figcaption class="small muted">あなたのタイプ</figcaption></figure>`:''}<figure style="margin:0;text-align:center">${flower(l.s,{labels:false,size:110})}<figcaption class="small muted">講師のタイプ</figcaption></figure></div><p class="small muted">講師の型が、あなたの「${esc(t.name)}」の方向にあるほどマッチ度が上がります。</p></div>
+ <div class="sheet"><h3>${esc(l.name)}×${esc(t.name)} サークル</h3><p class="small muted">参加表明が5人集まると、日時・形式・場所の投票が始まります。</p><div class="dots">${[0,1,2,3,4].map(i=>`<i class="${i<Math.min(5,it.n)?'on':''}"></i>`).join('')}</div><p class="small"><b>${Math.min(it.n,5)}/5人</b>${it.n<5?`・あと${5-it.n}人で投票開始`:'・投票が始まりました'}</p>${evc?`<button class="btn ha full" data-act="go:vote:${evc.id}">投票に進む</button>`:`<button class="btn ha full" data-act="interest:${key}" ${done?'disabled':''}>${done?'参加表明済み':'このサークルに参加表明する'}</button>`}</div>
+ ${props.length?`<h2>講師からの提案</h2><div class="sheet">${props.map(eventCard).join('')}</div>`:''}
+ <div class="sheet row">${stageIcon(st,44)}<div class="grow"><b>受け取ったエール ${lecYell(l).toLocaleString()}pt</b><div class="small muted">講師の花：${RANKS[st].n}</div></div><button class="btn sm" data-act="go:yell:lec:${l.id}">エールを送る</button></div>`};
+
+V.events=()=>{const u=me(),seg=state.ui.evSeg;const mine=myEvents();const td=todos();const upcoming=mine.filter(e=>e.status!=='done').map(e=>({e,dt:evDate(e)})).filter(x=>x.dt&&x.dt.days>=0).sort((a,b)=>a.dt.ts-b.dt.ts);const nx=upcoming[0];
+ const saved=mine.filter(e=>e.status==='confirmed'||e.status==='done').reduce((x,e)=>x+Math.max(0,perPerson(e,e.min,e.venueFee||0,u).total-perPerson(e,e.joined,e.venueFee||0,u).total),0);
+ const cm=state.ui.calM||10,first=new Date(2026,cm-1,1).getDay(),days=new Date(2026,cm,0).getDate();const byDay={};state.events.forEach(e=>{const d=evDate(e);if(d&&d.m===cm)(byDay[d.d]=byDay[d.d]||[]).push(e)});const sel=state.ui.calDay;
+ let cal='';['日','月','火','水','木','金','土'].forEach(w=>cal+=`<span class="wd">${w}</span>`);for(let i=0;i<first;i++)cal+='<span></span>';for(let d=1;d<=days;d++){const es=byDay[d]||[];const my=es.some(e=>e.by&&e.by[state.persona]);cal+=`<button class="${es.length?'has':''} ${my?'mine':''} ${sel===d?'sel':''}" data-act="calDay:${d}" ${es.length?'':'tabindex="-1"'} aria-label="${cm}月${d}日 ${es.length}件">${d}${es.length?'<i></i>':'<i style="background:transparent"></i>'}</button>`}
+ const listSrc=sel?(byDay[sel]||[]):state.events.filter(e=>e.status===seg);const list=[...listSrc].sort((a,b)=>((evDate(a)||{}).ts||0)-((evDate(b)||{}).ts||0));
+ return`<h1>イベント</h1><p class="lead">参加予定の会と、これから始まる会をまとめて確認できます。</p>
+ ${nx?`<button class="nexthero" data-act="go:${nx.e.status==='voting'?'vote':'event'}:${nx.e.id}"><div class="row between"><span class="tag">${nx.e.status==='voting'?'日程投票中':'次の予定'}</span><span class="tag">${evFormat(nx.e)==='オンライン'?'💻 オンライン':'📍 対面'}</span></div><div class="row" style="align-items:flex-end;gap:10px;margin-top:10px"><div class="cd">${nx.dt.days===0?'今日':`あと${nx.dt.days}<small>日</small>`}</div><div class="small" style="font-weight:700;padding-bottom:4px">${nx.dt.m}月${nx.dt.d}日（${esc(nx.dt.w)}）${esc(nx.dt.time)}</div></div><b style="display:block;font-size:18px;margin:10px 0 6px;line-height:1.4">${esc(nx.e.title)}</b><div class="row small" style="gap:6px;font-weight:700">${avatar(LEC(nx.e.lec).name,26,'l:'+nx.e.lec)}${esc(LEC(nx.e.lec).name)}・${nx.e.joined}人参加</div></button>`:''}
+ <div class="tiles" style="grid-template-columns:repeat(4,1fr)"><div class="tile"><b>${upcoming.length}</b><span>参加予定</span></div><div class="tile" style="${td.length?'border-color:var(--ha);':''}"><b style="${td.length?'color:var(--ha)':''}">${td.length}</b><span>要対応</span></div><div class="tile"><b>${mine.filter(e=>e.status==='done').length}</b><span>参加済み</span></div><div class="tile"><b style="font-size:17px">${Math.round(saved).toLocaleString()}</b><span>節約できた円</span></div></div>
+ ${td.length?`<h2>やることリスト</h2><div class="sheet">${td.map(x=>`<button class="todo" data-act="${x.act}"><span class="ic" style="background:${x.bg}">${x.ic}</span><span class="grow"><b style="display:block">${x.t}</b><span class="small muted ellipsis" style="display:block">${esc(x.e.title)}</span></span><span class="muted">›</span></button>`).join('')}</div>`:''}
+ <h2>カレンダー</h2><div class="sheet"><div class="row between" style="margin-bottom:8px"><button class="icon" data-act="calM:${cm-1}" ${cm<=9?'disabled':''} aria-label="前の月">‹</button><b style="font-size:17px">2026年${cm}月</b><button class="icon" data-act="calM:${cm+1}" ${cm>=11?'disabled':''} aria-label="次の月">›</button></div><div class="cal">${cal}</div><div class="row small muted" style="gap:12px;margin-top:8px;font-weight:700"><span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ha)"></i> 参加中</span><span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ink2)"></i> ほかの会</span></div></div>
+ <h2>${sel?`${cm}月${sel}日の会 <button class="btn sm ghost" style="margin-left:6px" data-act="calDay:0">解除</button>`:'すべての会'}</h2>${sel?'':`<div class="seg">${[['voting','投票中'],['proposed','募集中'],['confirmed','開催確定'],['done','開催済み']].map(([k,l])=>`<button class="${seg===k?'on':''}" data-act="evSeg:${k}">${l}（${state.events.filter(e=>e.status===k).length}）</button>`).join('')}</div>`}<div class="sheet">${list.length?list.map(eventCard).join(''):'<p class="small muted">該当する会はありません。</p>'}</div>`};
+
+function priceTable(e,venueFee){const u=me();const rows=[];for(let n=e.min;n<=e.max;n++){const p=perPerson(e,n,venueFee,u);rows.push(`<tr class="${n===e.joined?'now':''}"><td>${n}人${n===e.joined?'（いま）':''}</td><td>${yen(p.total)}</td></tr>`)}return`<div class="tbl-wrap"><table class="price">${rows.join('')}</table></div>`}
+function breakdown(e,n,venueFee){const u=me(),p=perPerson(e,n,venueFee,u);return`<table class="price"><tr><td>講師料（${yen(e.fee)}÷${n}人）</td><td>${yen(p.lec)}</td></tr><tr><td>会場費（${yen(venueFee)}÷${n}人${tier(u)===2?'、10%還元':''}）</td><td>${yen(p.ven)}</td></tr><tr><td>利用料${u.plus?'（推しプラスで無料）':tier(u)?`（評価割引${[0,20,50][tier(u)]}%）`:''}</td><td>${yen(p.pf)}</td></tr><tr class="total"><td>1人あたり</td><td>${yen(p.total)}</td></tr></table>`}
+V.vote=p=>{const e=ev(p.id),t=TH(e.theme),l=LEC(e.lec);const mv=e.voted[state.persona];const sel=state.ui.vote[e.id]||(mv?{...mv}:{});state.ui.vote[e.id]=sel;
+ const lead=k=>[...e.opts[k]].sort((a,b)=>b.v-a.v)[0];const venue=e.opts.venue.find(v=>v.id===sel.venue)||lead('venue');
+ const nNext=Math.min(e.joined+3,e.max);const now=perPerson(e,e.joined,venue.fee,me()).total,nxt=perPerson(e,nNext,venue.fee,me()).total;
+ const cat=(k,label)=>{const tot=e.opts[k].reduce((s,o)=>s+o.v,0);return`<div class="sheet"><h3>${label}</h3>${e.opts[k].map(o=>`<button class="opt ${sel[k]===o.id?'on':''}" data-act="voteSel:${e.id}:${k}:${o.id}" ${mv?'disabled':''}><span class="box">${sel[k]===o.id?'✓':''}</span><span class="grow">${esc(o.l)}${o.fee!==undefined?`<span class="small muted">　会場費 ${o.fee?yen(o.fee):'なし'}</span>`:''}<div class="bar"><span style="width:${tot?o.v/tot*100:0}%"></span></div></span><span class="small muted">${o.v}票</span></button>`).join('')}</div>`};
+ return`<p class="lead" style="margin-top:16px">${esc(t.name)}・${esc(l.name)}</p><h1 style="margin-top:0">${esc(e.title)}</h1><div class="sheet row between"><div><b>${e.joined}人</b><span class="small muted">／最大${e.max}人が参加表明</span></div><span class="tag ha">締め切り${e.deadline}</span></div>
+ <div class="sheet"><h3>参加費の目安</h3><p class="small muted">「${esc(venue.l)}」の場合。人数が増えるほど1人あたりが安くなります。</p>${e.joined<e.max?`<div class="callout">あと${nNext-e.joined}人集まると、1人あたり<b>${yen(now-nxt)}</b>安くなります</div>`:''}${priceTable(e,venue.fee)}<button class="btn ghost sm" style="margin-top:10px" data-act="inviteEv:${e.id}">友達を誘う</button></div>
+ ${cat('date','日時')}${cat('format','形式')}${cat('venue','場所')}
+ <div class="pad">${mv?'<div class="callout ri">投票済みです。締め切り後、講師が承認すると開催が確定します。</div>':`<button class="btn ha full" data-act="vote:${e.id}" ${sel.date&&sel.format&&sel.venue?'':'disabled'}>この内容で投票する</button><p class="small muted" style="text-align:center;margin-top:8px">締め切り後、最多得票の組み合わせを講師が承認して確定します</p>`}</div>`};
+
+V.event=p=>{const e=ev(p.id),t=TH(e.theme),l=LEC(e.lec),u=me(),per=state.persona;const head=`<p class="lead" style="margin-top:16px">${esc(t.name)}・${esc(l.name)}</p><h1 style="margin-top:0">${esc(e.title)}</h1><div class="sheet"><ul class="kv"><li><b>日時</b>${esc(e.date)}</li><li><b>形式</b>${esc(e.format)}</li><li><b>場所</b>${esc(e.venue)}</li><li><b>参加者</b>${e.joined}人（最少${e.min}人・最大${e.max}人）</li></ul></div>`;
+ if(e.status==='proposed'){const j=e.by[per];return head+`<div class="sheet"><h3>参加費の目安（いまの人数）</h3>${breakdown(e,Math.max(e.joined,e.min),e.venueFee)}<div class="callout">あと${Math.max(0,e.min-e.joined)}人集まると開催が決まります</div></div><div class="pad"><button class="btn ha full" data-act="joinProp:${e.id}" ${j?'disabled':''}>${j?'参加表明済み':'この会に参加する'}</button></div>`}
+ if(e.status==='confirmed'){const paid=e.paid&&e.paid[per],ci=e.checked&&e.checked[per];return head+`<div class="sheet"><h3>参加費</h3>${breakdown(e,e.joined,e.venueFee)}<p class="small muted" style="margin-top:6px">キャンセルは開催3日前まで無料です（モックの想定）。</p></div>`+(paid?`<div class="sheet" style="text-align:center"><h3>チケット</h3>${qrSvg(e.id+per)}<p class="small muted">当日、会場でこのコードを見せてください</p>${ci?'<div class="callout ri">チェックイン済みです</div>':`<button class="btn sm" data-act="checkin:${e.id}">チェックインする（デモ）</button>`}</div><div class="pad"><button class="btn ghost full" data-act="finish:${e.id}">イベントを終える（デモ）</button></div>`:`<div class="pad"><button class="btn ha full" data-act="pay:${e.id}">事前決済する（デモ）</button><p class="small muted" style="text-align:center;margin-top:8px">実際の決済は行われません</p></div>`)}
+ const rated=e.rated&&e.rated[per];return head+`<div class="sheet">${rated?'<div class="callout ri">評価を送りました。講師からの評価がそろうと、お互いに公開されます。</div>':'<p>おつかれさまでした。72時間以内に評価をお願いします。</p>'}</div><div class="pad stack">${rated?'':`<button class="btn ha full" data-act="go:rate:${e.id}">評価する</button>`}<button class="btn ghost full" data-act="go:yell:lec:${l.id}">${esc(l.name)}さんにエールを送る</button></div>`};
+
+V.rate=p=>{const e=ev(p.id),l=LEC(e.lec);const r=state.ui.rate[e.id]||(state.ui.rate[e.id]={star:0,tags:[]});const TAGS=['学びがあった','問いが深まった','場が温かい','説明がわかりやすい','時間を守っていた','また参加したい'];
+ return`<h1>${esc(l.name)}さんを評価する</h1><p class="lead">${esc(e.title)}</p><div class="sheet" style="text-align:center"><div class="stars" style="justify-content:center">${[1,2,3,4,5].map(n=>`<button class="${n<=r.star?'on':''}" data-act="star:${e.id}:${n}" aria-label="星${n}">★</button>`).join('')}</div></div><div class="sheet"><h3>よかったところ</h3><div class="chips">${TAGS.map(x=>`<button class="chip ${r.tags.includes(x)?'on':''}" data-act="rtag:${e.id}:${x}">${x}</button>`).join('')}</div><label class="f" for="rc">ひとこと（任意）</label><textarea id="rc" data-id="rcomment" placeholder="講師へのメッセージ"></textarea></div><div class="sheet small muted">お互いの評価は、双方が送り終えるか72時間が過ぎるまで公開されません。報復的な評価を防ぐためです。</div><div class="pad"><button class="btn ha full" data-act="rate:${e.id}" ${r.star?'':'disabled'}>評価を送る</button></div>`};
+
+V.yell=p=>{const u=me();const isLec=p.kind==='lec';const target=isLec?LEC(p.id).name:p.id;const amts=[100,300,500,1000];const a=state.ui.yellAmt;const st=stageOf(u.sent),st2=stageOf(u.sent+a);
+ return`<h1>エールを送る</h1><p class="lead">エールは花に注ぐ光と水です。送るほど、あなたの花も育ちます。</p><div class="sheet row">${avatar(target,48,isLec?'l:'+p.id:null)}<div><b>${esc(target)}</b>さんへ<div class="small muted">${isLec?'推し講師':'推し仲間'}</div></div></div>
+ <div class="sheet"><h3>送る量</h3><div class="chips">${amts.map(n=>`<button class="chip ${a===n?'on':''}" data-act="yellAmt:${n}">${n}pt</button>`).join('')}</div><p class="small muted" style="margin-top:8px">残高 ${u.bal.toLocaleString()}pt</p>${st2>st?`<div class="callout ri">このエールで、あなたの花が「${RANKS[st2].n}」に育ちます</div>`:''}</div>
+ <div class="pad stack"><button class="btn ha full" data-act="sendYell:${p.kind}:${p.id}" ${u.bal<a?'disabled':''}>${a}ptのエールを送る</button>${u.bal<a?'<button class="btn ghost full" data-act="buy">エールを1,000pt追加する（デモ）</button>':''}</div>
+ <div class="sheet small muted">モックではアプリ内ポイントとして動作します。購入したポイントの送付や換金は法規制に関わる可能性があるため、本番では専門家の確認を経て提供します。将来はテーマごとのトークン（フィナンシェ連携）も検討しています。</div>`};
+
+V.mypage=()=>{const u=me(),r=compute(u),ti=tier(u),st=stageOf(u.sent);const rc=r?reach(u,r.s):0;const hm=heatHtml(u);const up=myEvents().filter(e=>e.status!=='done').map(e=>({e,dt:evDate(e)})).filter(x=>x.dt&&x.dt.days>=0).sort((a,b)=>a.dt.ts-b.dt.ts);const pl=r?plan(u,r.s):[];
+ const next=[[4.5,5],[4.8,15]][Math.min(ti,1)];const tierPct=ti>=2?100:Math.round((Math.min(u.rc/next[1],1)*.5+Math.min((u.rating||0)/next[0],1)*.5)*100);
+ const need=ti>=2?'最上位の段階です':`次の段階まで：${u.rating<next[0]?`評価★${next[0]}以上`:'評価はクリア'}・${u.rc<next[1]?`参加あと${next[1]-u.rc}回`:'参加回数はクリア'}`;
+ const stPct=st<3?Math.round((u.sent-RANKS[st].min)/(RANKS[st+1].min-RANKS[st].min)*100):100;
+ return`<div class="profile pop"><div class="row" style="gap:14px">${avatar(u.name,84,'u:'+state.persona)}<div class="grow"><h1 style="margin:0;font-size:23px">${esc(u.name)}</h1><div class="small muted" style="font-weight:700">${u.age?u.age+'歳・':''}${esc(u.job||'プロフィール未設定')}</div><div class="row" style="gap:4px;flex-wrap:wrap;margin-top:4px">${u.verified?'<span class="tag ri">✓ 本人確認済み</span>':'<span class="tag ha">本人確認が未完了</span>'}${u.plus?'<span class="tag yell">★ 推しプラス</span>':''}<span class="tag">${stageIcon(st,12)} ${RANKS[st].n}</span></div></div></div>
+ ${photoPicker('u:'+state.persona,'')}
+ <div class="pstats"><div><b>${u.rc?'★'+u.rating:'-'}</b><span>評価</span></div><div><b>${u.rc}</b><span>参加した会</span></div><div><b>${u.friends.length}</b><span>フレンド</span></div></div></div>
+ <div class="kpis"><button class="kpi" data-act="tab:shuhari"><span class="lbl">目指す私への到達度</span><div class="row" style="gap:8px">${ring(rc,'var(--ri)',64,8,rc+'%')}<span class="small muted">${r?lean(r.s):'診断がまだです'}</span></div></button>
+ <div class="kpi dark"><span class="lbl">エール残高</span><span class="num">${u.bal.toLocaleString()}<small>pt</small></span><button class="btn sm" style="background:var(--yell);color:#191B2E;margin-top:auto" data-act="buy">＋ 追加する</button></div>
+ <div class="kpi"><span class="lbl">わたしの花</span><div class="row" style="gap:6px">${stageIcon(st,44)}<div><b style="font-size:18px">${RANKS[st].n}</b><div class="small muted">${st<3?`次まで${(RANKS[st+1].min-u.sent).toLocaleString()}pt`:'最高ランク'}</div></div></div><div class="meter yell"><span style="width:${stPct}%"></span></div></div>
+ <div class="kpi"><span class="lbl">評価による割引</span><div class="row" style="gap:8px">${ring(tierPct,'var(--ha)',64,8,['通常','20%','50%'][ti])}<span class="small muted">${u.plus?'推しプラスで利用料無料':['割引なし','利用料20%引き','50%引き＋還元'][ti]}</span></div></div></div>
+ ${r?`<h2>いまの私と伸ばす方向</h2><div class="sheet row" style="gap:12px">${flower(r.s,{labels:false,size:120,show:{shu:1,ri:1},target:u.target})}<div class="grow"><div class="small muted" style="font-weight:700;margin-bottom:6px">伸ばしどころ</div><div class="chips">${pl.map(p=>`<span class="tag ha">${p.ax.name}→${p.dir==='e'?p.ax.e:p.ax.w}</span>`).join('')}</div><button class="btn sm ghost" style="margin-top:10px" data-act="tab:shuhari">診断結果を見る</button></div></div>`:`<div class="sheet"><p>診断を受けると、ここにあなたのタイプが表示されます。</p><button class="btn sm ha" data-act="go:diag">診断する</button></div>`}
+ <h2>学びの記録</h2><div class="sheet"><div class="row between" style="margin-bottom:10px"><div><span class="bignum" style="font-size:28px">${hm.recent}</span><span class="small muted" style="font-weight:700"> 日（直近4週間の活動日）</span></div><span class="tag ri">過去14週</span></div><div class="heat">${hm.cells}</div><div class="row small muted" style="justify-content:flex-end;gap:4px;margin-top:6px;font-weight:700">少ない<i style="width:10px;height:10px;border-radius:3px;background:var(--chip)"></i><i style="width:10px;height:10px;border-radius:3px;background:var(--ri);opacity:.35"></i><i style="width:10px;height:10px;border-radius:3px;background:var(--ri);opacity:.65"></i><i style="width:10px;height:10px;border-radius:3px;background:var(--ri)"></i>多い</div></div>
+ <h2>次の予定</h2><div class="sheet">${up.length?up.slice(0,3).map(x=>eventCard(x.e)).join(''):'<p class="small muted">予定はまだありません。推しコミュから気になる会を探してみましょう。</p><button class="btn sm" data-act="tab:comm">推しコミュを見る</button>'}</div>
+ <h2>推しテーマ</h2><div class="hscroll">${u.themes.map(id=>{const t=TH(id);return`<button class="ccard" style="width:170px" data-act="go:community:${id}"><span class="tag" style="background:${AXCOL[t.ax]};color:#fff">${AXM[t.ax].name}</span><b style="display:block;margin:6px 0 2px;font-size:16px">${esc(t.name)}</b><span class="small muted">仲間 ${memberCount(id)}人</span></button>`}).join('')}<button class="ccard" style="width:140px;border-style:dashed" data-act="go:pick"><b>＋ テーマを<br>選び直す</b></button></div>
+ <h2>フレンド</h2><div class="hscroll">${u.friends.map(f=>{const fu=state.users[f];return`<button class="friend-tile" data-act="go:friend:${f}">${avatar(fu.name,52,'u:'+f)}<span class="ellipsis" style="max-width:72px">${esc(fu.name.split(' ')[1]||fu.name)}</span></button>`}).join('')}<button class="friend-tile" data-act="invite"><span class="plus">＋</span><span>招待する</span></button></div>
+ <h2>割引の段階</h2><div class="sheet"><div class="tierstep"><div class="${ti===0?'on':''}"><b>通常</b>利用料500円</div><div class="${ti===1?'on':''}"><b>20%引き</b>★4.5・5回〜</div><div class="${ti===2?'on':''}"><b>50%引き</b>★4.8・15回〜</div></div><p class="small muted" style="margin-top:8px;font-weight:700">${need}</p></div>
+ <div class="sheet ${u.plus?'':'pop'}" style="${u.plus?'':'background:var(--yell);color:#191B2E;border-color:var(--ink)'}"><div class="row between"><div><b style="font-size:17px">推しプラス</b><div class="small" style="opacity:.8;font-weight:700">月額980円</div></div><button class="btn sm ${u.plus?'ghost':''}" data-act="plus">${u.plus?'解約する（デモ）':'加入する（デモ）'}</button></div><div class="small" style="margin-top:8px;font-weight:700">利用料無料・高評価講師に優先参加・投票の先行通知・推しテーマ5つまで</div></div>
+ <details class="sheet"><summary>安全とプライバシー</summary><ul class="kv"><li>対面イベントへの参加には本人確認が必要です${u.verified?'':`<br><button class="btn sm" style="margin-top:6px" data-act="verify">本人確認をする（デモ）</button>`}</li><li>ご利用は18歳以上、飲酒を伴う会場は20歳以上が対象です</li><li>講師とのやり取りはアプリ内メッセージに限られます</li><li>気になる相手は、プロフィールから通報・ブロックできます</li><li>はじめての方には、オンライン開催の会を先にご案内します</li></ul></details>
+ <details class="sheet"><summary>デモの操作</summary><div class="stack"><button class="btn ghost full" data-act="go:diag">診断をやり直す</button><button class="btn ghost full" data-act="reset">デモの状態をリセットする</button></div></details>`};
+
+V.friend=p=>{const u=me(),f=state.users[p.id],r=compute(u),rf=compute(f);if(!r||!rf)return`<div class="sheet" style="margin-top:16px">比較するには、お互いの診断が必要です。</div>`;const shared=u.themes.filter(x=>f.themes.includes(x));const evs=state.events.filter(e=>(e.status==='proposed'||e.status==='voting')&&(u.themes.includes(e.theme)||f.themes.includes(e.theme)));
+ return`<div class="pad row" style="margin-top:10px;gap:0">${avatar(u.name,52,'u:'+state.persona)}<span style="margin-left:-10px">${avatar(f.name,52,'u:'+p.id)}</span></div><h1>${esc(f.name)}さんと比べる</h1><div class="sheet">${flower(r.s,{friend:rf.s,size:400,show:{shu:1}})}<div class="legend"><span><i style="background:var(--shu)"></i>あなた</span><span><i style="border:2px solid var(--ri)"></i>${esc(f.name)}さん</span></div></div>
+ <div class="sheet">${AX.map(a=>`<div class="axis"><b style="font-size:14px">${a.name}</b><div class="ends"><span>${a.w}</span><span>${a.e}</span></div><div class="track"><div class="base"></div><div class="dot" style="left:${r.s[a.id]}%"></div><div class="dot fr" style="left:${rf.s[a.id]}%"></div></div></div>`).join('')}</div>
+ <div class="sheet"><h3>共通の推しテーマ</h3>${shared.length?`<div class="chips">${shared.map(x=>`<button class="chip" data-act="go:theme:${x}">${esc(TH(x).name)}</button>`).join('')}</div>`:`<p class="small muted">共通の推しテーマはまだありません。お互いの伸ばしどころを補い合える関係かもしれません。</p>`}</div>
+ ${evs.length?`<h2>一緒に参加できそうな会</h2><div class="sheet">${evs.map(eventCard).join('')}</div><div class="pad"><button class="btn ha full" data-act="pair">ペアで参加する（ペア割・各200円引き）</button></div>`:''}`};
+
+/* ============ 画面：講師 ============ */
+V.lec=()=>{const l=LEC(state.lec);const rate=lecRate(l),st=stageOf(lecYell(l));const pend=state.events.filter(e=>e.lec===l.id&&e.status==='voting');const mine=state.events.filter(e=>e.lec===l.id&&e.status!=='voting');const ratings=state.lecRatings[l.id]||[];
+ const lead=(e,k)=>[...e.opts[k]].sort((a,b)=>b.v-a.v)[0];
+ return`<div class="lecmode" style="padding:10px 18px"><span class="tag yell">講師側の画面（簡易表示）</span></div>
+ <div class="sheet"><label class="f" for="lecsel" style="margin-top:0">表示する講師</label><select class="field" id="lecsel" data-chg="lec">${LECS.map(x=>`<option value="${x.id}" ${x.id===l.id?'selected':''}>${esc(x.name)}（${x.cat}）</option>`).join('')}</select></div>
+ <div class="sheet"><div class="row">${avatar(l.name,72,'l:'+l.id)}<div class="grow"><h1 style="margin:0;font-size:22px">${esc(l.name)}</h1><div class="small muted">${CAT_ICON[l.cat]} ${l.cat}｜${esc(l.title)}</div></div></div>${photoPicker('l:'+l.id,'講師は顔写真の登録をおすすめします。本人確認の書類と照合し、プロフィールやサークル、イベントに表示されます。')}<div style="text-align:center;margin-top:8px">${flower(l.s,{size:300,show:{shu:1}})}<p class="small muted">講師も診断を受け、自分のタイプを公開します。ユーザーの「伸ばす方向」にタイプがある講師ほどマッチしやすくなります。</p></div></div>
+ <h2>成約手数料</h2><div class="sheet"><div class="row between"><span>現在の評価</span><b>★${l.rating}（${l.count}回開催）</b></div><table class="price" style="margin-top:8px"><tr class="${rate===.15?'now':''}"><td>通常</td><td>15%</td></tr><tr class="${rate===.12?'now':''}"><td>★4.5以上・開催10回以上</td><td>12%</td></tr><tr class="${rate===.10?'now':''}"><td>★4.8以上・開催30回以上</td><td>10%＋おすすめ枠</td></tr></table><p class="small muted" style="margin-top:6px">講師料${yen(l.fee)}の場合の受取額：${yen(l.fee*(1-rate))}</p></div>
+ <h2>受け取ったエール</h2><div class="sheet row">${stageIcon(st,56)}<div class="grow"><b>${lecYell(l).toLocaleString()}pt・${RANKS[st].n}</b><div class="small muted">エールが多いほど、テーマ内での表示順が上がります</div></div></div>
+ <h2>推しサークル</h2><div class="sheet">${l.themes.map(id=>{const it=interest(l.id+'|'+id);return`<div class="list-item"><div class="grow"><b>${esc(TH(id).name)}</b><div class="small muted">参加表明 ${Math.min(it.n,5)}/5人・推しコミュ ${memberCount(id)}人</div></div></div>`}).join('')}</div>
+ <h2>承認待ちの投票</h2><div class="sheet">${pend.length?pend.map(e=>`<div class="post"><b>${esc(e.title)}</b><div class="small muted">参加表明 ${e.joined}人・締め切り${e.deadline}</div><ul class="kv" style="margin:6px 0"><li><b>最多の日時</b>${esc(lead(e,'date').l)}</li><li><b>最多の形式</b>${esc(lead(e,'format').l)}</li><li><b>最多の場所</b>${esc(lead(e,'venue').l)}</li></ul><button class="btn ha sm" data-act="approve:${e.id}">締め切って開催を確定する</button></div>`).join(''):'<p class="small muted">承認待ちの投票はありません。</p>'}</div>
+ <h2>イベントを提案する</h2><div class="sheet"><label class="f" for="pth">テーマ</label><select class="field" id="pth" data-id="pth">${l.themes.map(id=>`<option value="${id}">${esc(TH(id).name)}</option>`).join('')}</select><label class="f" for="pti">タイトル</label><input type="text" id="pti" data-id="pti" placeholder="例：朝の庭で季節を感じる会"><label class="f" for="pdt">日時</label><input type="text" id="pdt" data-id="pdt" placeholder="例：10月25日（日）10:00〜12:00"><label class="f" for="pfm">形式</label><select class="field" id="pfm" data-id="pfm"><option>対面</option><option>オンライン</option></select><div class="pair" style="margin:0"><div><label class="f" for="pmin">最少人数</label><input type="number" id="pmin" data-id="pmin" value="5" min="3" max="10"></div><div><label class="f" for="pmax">最大人数</label><input type="number" id="pmax" data-id="pmax" value="10" min="5" max="20"></div></div><label class="f" for="pfee">講師料（1回あたり、参加者で割り勘）</label><input type="number" id="pfee" data-id="pfee" value="${l.fee}" step="1000"><button class="btn full" style="margin-top:12px" data-act="propose">提案を公開する</button></div>
+ <h2>自分のイベント</h2><div class="sheet">${mine.length?mine.map(e=>`<div class="post"><b>${esc(e.title)}</b><div class="small muted">${({proposed:'募集中',confirmed:'開催確定',done:'開催済み'})[e.status]}・${esc(e.date||'')}・${e.joined}人</div></div>`).join(''):'<p class="small muted">まだありません。</p>'}</div>
+ <h2>最近の評価</h2><div class="sheet">${[...ratings,...(()=>{const pool=[{star:5,text:'問いの立て方が変わりました。また参加したいです。'},{star:5,text:'場の空気がやわらかく、初参加でも話しやすかった。'},{star:4,text:'内容は濃かったです。もう少し時間がほしかった。'},{star:5,text:'自分の思い込みに気づけた2時間でした。'},{star:5,text:'仲間と一緒だから続けられそうです。'},{star:4,text:'オンライン参加でしたが一体感がありました。'}];const r=rng(hash(l.id));return pool.sort(()=>r()-.5).slice(0,4)})()].map(x=>`<div class="post"><span style="color:var(--yell)">${'★'.repeat(x.star)}</span><p class="small" style="margin:4px 0 0">${esc(x.text||'（コメントなし）')}</p></div>`).join('')}</div>`};
+
+/* ============ 描画 ============ */
+function render(){save();const n=state.nav;let view=state.mode==='lec'?'lec':n.view;const fn=V[view]||V.home;
+ let html=topbar()+`<main>${fn(n.p||{})}</main>`+tabbar();
+ if(state.toast)html+=`<div class="toast" role="status">${esc(state.toast)}</div>`;
+ if(state.modal)html+=`<div class="modal" role="dialog" aria-modal="true" aria-label="花が育ちました"><div class="sheet">${stageIcon(state.modal.st,110,true)}<h2 style="margin:10px 0 6px;text-align:center">花が「${RANKS[state.modal.st].n}」に育ちました</h2><p class="small muted">新しい特典：${RANKS[state.modal.st].perk}</p><button class="btn full" data-act="closeModal">閉じる</button></div></div>`;
+ document.getElementById('app').innerHTML=html;
+ if(view==='analyze'&&!render.t){render.t=setTimeout(()=>{render.t=null;state.ui.bloom=true;const u=me();if(state.persona==='new'&&!u.hist.length)u.hist=[];state.stack=[];state.nav={tab:'shuhari',view:'shuhari',p:{}};render();window.scrollTo(0,0)},1700)}}
+
+/* ============ 操作 ============ */
+const val=id=>{const el=document.querySelector(`[data-id="${id}"]`);return el?el.value:''};
+const ACT={
+ back,tab:t=>tab(t),
+ go:(view,a,b)=>{const p=view==='circle'?{lec:a,theme:b}:view==='yell'?{kind:a,id:b}:a!==undefined?{id:a}:{};if(view==='community')state.ui.comSeg='timeline';if(view==='pick')state.ui.pick=null;if(view==='dq'){const f=me().answers.findIndex(x=>!x);state.ui.qi=f>=0?f:0}if(view==='circle'){const u=me();u.mis=u.mis||{};u.mis.circle=true}go(view,p)},
+ mode:()=>{state.mode=state.mode==='user'?'lec':'user';state.stack=[];if(state.mode==='user')state.nav={tab:'home',view:'home',p:{}};render();window.scrollTo(0,0)},
+ ans:(i,v)=>{me().answers[+i]=+v;const u=me();if(+i<11)state.ui.qi=+i+1;else{const f=u.answers.findIndex(x=>!x);if(f>=0)state.ui.qi=f}render()},
+ qNav:i=>{state.ui.qi=clamp(+i,0,11);render()},
+ solo:k=>{state.ui.show={shu:true,ha:k==='ha',ri:k==='ri'};render()},
+ toolOn:id=>{const u=me();u.toolOn=u.toolOn||[];u.toolOn=u.toolOn.includes(id)?u.toolOn.filter(x=>x!==id):[...u.toolOn,id];render()},
+ toolPick:(id,o)=>{const u=me(),t=TOOLS.find(x=>x.id===id);let s=u.tools[id]||[];if(s.includes(o))s=s.filter(x=>x!==o);else if(s.length<t.max)s=[...s,o];else{toast(`${t.max}つまで選べます`);return}u.tools[id]=s;render()},
+ toolType:(id,i,ch)=>{const u=me();const s=(u.tools[id]||'____').split('');s[+i]=ch;u.tools[id]=s.join('');render()},
+ toolBig:(k,lv)=>{const u=me();u.tools.big5={...(u.tools.big5||{}),[k]:lv};render()},
+ toolOne:(id,n)=>{me().tools[id]=+n;render()},
+ exp:id=>{const u=me();u.exps=u.exps.includes(id)?u.exps.filter(x=>x!==id):[...u.exps,id];render()},
+ analyze:()=>{if(!compute(me()))return;go('analyze')},
+ show:k=>{state.ui.show[k]=!state.ui.show[k];render()},
+ pickT:id=>{const u=me(),max=u.plus?5:3,s=state.ui.pick;if(s.includes(id))state.ui.pick=s.filter(x=>x!==id);else if(s.length<max)s.push(id);else{toast(`推しテーマは${max}つまでです`);return}render()},
+ savePick:()=>{me().themes=[...state.ui.pick];state.ui.pick=null;toast('推しテーマを決めました');tab('comm')},
+ toggleTheme:id=>{const u=me(),max=u.plus?5:3;if(u.themes.includes(id))u.themes=u.themes.filter(x=>x!==id);else if(u.themes.length<max)u.themes.push(id);else{toast(`推しテーマは${max}つまでです。先にどれかを外してください`);return}toast(u.themes.includes(id)?'推しテーマに追加しました':'推しテーマから外しました')},
+ comSeg:k=>{state.ui.comSeg=k;render()},
+ evSeg:k=>{state.ui.evSeg=k;render()},
+ post:id=>{const txt=val('post').trim();if(!txt){toast('投稿内容を入力してください');return}(state.posts[id]=state.posts[id]||[]).unshift({name:me().name,key:'u:'+state.persona,text:txt,time:'たった今',yell:0});me().bal+=10;me().mis=me().mis||{};me().mis.post=true;toast('投稿しました。エール10ptを受け取りました')},
+ interest:(key)=>{const it=interest(key);if(it.by[state.persona])return;it.by[state.persona]=1;it.n++;const [lid,tid]=key.split('|');const u=me();u.bal+=0;
+  if(it.n>=5&&!state.events.find(e=>e.circle===key)){const l=LEC(lid),t=TH(tid);const face=l.format.includes('対面');const id='ev'+Date.now();state.events.unshift({id,circle:key,theme:tid,lec:lid,title:`${l.name}と「${t.name}」を学ぶ会`,status:'voting',joined:5,min:5,max:10,fee:l.fee,deadline:'あと48時間',by:{[state.persona]:1},voted:{},opts:{date:[{id:'d1',l:'10月24日（土）14:00〜16:00',v:2},{id:'d2',l:'10月25日（日）10:00〜12:00',v:1},{id:'d3',l:'10月29日（木）19:30〜21:30',v:1}],format:face?[{id:'f1',l:'対面',v:2},{id:'f2',l:'オンライン',v:1}]:[{id:'f2',l:'オンライン',v:3}],venue:face?[{id:'v1',l:`${l.area}のレンタルスペース`,fee:8000,v:2},{id:'v2',l:`${l.area}のカフェ（1ドリンク付き）`,fee:12000,v:1},{id:'v3',l:'オンライン（ビデオ会議）',fee:0,v:1}]:[{id:'v3',l:'オンライン（ビデオ会議）',fee:0,v:4}]}});toast('5人集まりました。開催の投票が始まります')}else toast(`参加表明しました（${Math.min(it.n,5)}/5人）`)},
+ voteSel:(id,k,o)=>{state.ui.vote[id]={...(state.ui.vote[id]||{}),[k]:o};render()},
+ vote:id=>{const e=ev(id),sel=state.ui.vote[id];['date','format','venue'].forEach(k=>{const o=e.opts[k].find(x=>x.id===sel[k]);if(o)o.v++});e.voted[state.persona]={...sel};e.by[state.persona]=1;toast('投票しました')},
+ inviteEv:id=>{const e=ev(id);if(e.joined>=e.max){toast('定員に達しています');return}e.joined++;toast('友達が参加表明しました（デモ）')},
+ invite:()=>toast('招待リンクをコピーしました（デモ）'),
+ joinProp:id=>{const e=ev(id);if(e.by[state.persona])return;e.by[state.persona]=1;e.joined++;if(e.joined>=e.min){e.status='confirmed';toast('最少人数に達し、開催が確定しました')}else toast(`参加表明しました。あと${e.min-e.joined}人で開催決定です`)},
+ pay:id=>{const e=ev(id);e.paid=e.paid||{};e.paid[state.persona]=1;me().bal+=50;toast('決済が完了しました（デモ）。参加でエール50ptを受け取りました')},
+ checkin:id=>{const e=ev(id);e.checked=e.checked||{};e.checked[state.persona]=1;toast('チェックインしました')},
+ finish:id=>{const e=ev(id);e.status='done';e.rated=e.rated||{};state.stack=[];state.nav={tab:'events',view:'event',p:{id}};toast('イベントが終わりました。評価をお願いします')},
+ star:(id,n)=>{state.ui.rate[id].star=+n;render()},
+ rtag:(id,x)=>{const r=state.ui.rate[id];r.tags=r.tags.includes(x)?r.tags.filter(y=>y!==x):[...r.tags,x];render()},
+ rate:id=>{const e=ev(id),r=state.ui.rate[id];e.rated=e.rated||{};e.rated[state.persona]=1;(state.lecRatings[e.lec]=state.lecRatings[e.lec]||[]).unshift({star:r.star,text:val('rcomment')||r.tags.join('、')});const u=me();u.rc++;state.stack=[];state.nav={tab:'events',view:'event',p:{id}};toast('評価を送りました')},
+ yellAmt:n=>{state.ui.yellAmt=+n;render()},
+ sendYell:(kind,id)=>{const u=me(),a=state.ui.yellAmt;if(u.bal<a)return;const before=stageOf(u.sent);u.bal-=a;u.sent+=a;if(kind==='lec')state.lecYell[id]=(state.lecYell[id]||0)+a;const after=stageOf(u.sent);u.mis=u.mis||{};u.mis.yell=true;if(after>before)state.modal={st:after};back();toast(`${a}ptのエールを送りました`)},
+ buy:()=>{me().bal+=1000;toast('エールを1,000pt追加しました（デモ）')},
+ closeModal:()=>{state.modal=null;render()},
+ plus:()=>{const u=me();u.plus=!u.plus;if(!u.plus&&u.themes.length>3)u.themes=u.themes.slice(0,3);toast(u.plus?'推しプラスに加入しました（デモ）':'推しプラスを解約しました（デモ）')},
+ verify:()=>{me().verified=true;toast('本人確認が完了しました（デモ）')},
+ pair:()=>toast('ペア割を適用しました（デモ）'),
+ comGo:(id,seg)=>{state.ui.comSeg=seg;go('community',{id})},
+ calDay:d=>{state.ui.calDay=(+d&&state.ui.calDay!==+d)?+d:0;render()},
+ calM:m=>{state.ui.calM=clamp(+m,9,11);state.ui.calDay=0;render()},
+ photoDel:(...k)=>{delete state.photos[k.join(':')];toast('写真を削除しました')},
+ reset:()=>{if(confirm('デモの状態を初期に戻しますか？')){state=initState();render();window.scrollTo(0,0)}},
+ approve:id=>{const e=ev(id);const lead=k=>[...e.opts[k]].sort((a,b)=>b.v-a.v)[0];const v=lead('venue');e.date=lead('date').l;e.format=lead('format').l;e.venue=v.l;e.venueFee=v.fee;e.status='confirmed';e.paid={};e.checked={};toast('開催が確定し、参加者に通知しました')},
+ propose:()=>{const l=LEC(state.lec);const title=val('pti').trim(),date=val('pdt').trim();if(!title||!date){toast('タイトルと日時を入力してください');return}const fmt=val('pfm');const min=clamp(+val('pmin')||5,3,20),max=clamp(+val('pmax')||10,min,30);state.events.unshift({id:'ev'+Date.now(),theme:val('pth'),lec:l.id,title,status:'proposed',joined:0,min,max,fee:+val('pfee')||l.fee,date,format:fmt,venue:fmt==='オンライン'?'オンライン':`${l.area}（提携スペース）`,venueFee:fmt==='オンライン'?0:8000,by:{},paid:{},checked:{}});toast('提案を公開しました。推しサークルに表示されます')}
+};
+document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el||el.disabled)return;const [fn,...args]=el.dataset.act.split(':');if(ACT[fn]){e.preventDefault();ACT[fn](...args);if(!['back','tab','go','mode','reset','analyze','savePick','comGo'].includes(fn))render()}});
+document.addEventListener('change',async e=>{const ph=e.target.closest('[data-photo]');if(ph){const key=ph.dataset.photo,file=ph.files&&ph.files[0];if(!file)return;try{const url=await toThumb(file);const prev=state.photos[key];state.photos[key]=url;if(!save()){if(prev)state.photos[key]=prev;else delete state.photos[key];toast('保存容量がいっぱいです。ほかの写真を削除してからお試しください');return}toast('写真を登録しました')}catch(err){toast('画像ファイル（JPEG・PNGなど）を選んでください')}return}
+ const el=e.target.closest('[data-chg]');if(!el)return;const [k,a]=el.dataset.chg.split(':');
+ if(k==='persona'){state.persona=el.value;state.stack=[];state.nav={tab:'home',view:'home',p:{}};state.ui.pick=null;state.ui.bloom=true;render();window.scrollTo(0,0)}
+ if(k==='target'){me().target[a]=+el.value;render()}
+ if(k==='lec'){state.lec=el.value;render();window.scrollTo(0,0)}});
+document.addEventListener('input',e=>{const el=e.target.closest('[data-filter="book"]');if(!el)return;const q=el.value.trim();document.querySelectorAll('.book').forEach(b=>{b.style.display=!q||b.dataset.key.includes(q)?'':'none'})});
+render();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').catch(()=>{})})}
+</script>
+</body>
+</html>
