@@ -1,8 +1,7 @@
 // オシバナ Service Worker
-// 画面（index.html）は常に最新を取りに行き、オフライン時だけ保存済みの版を使います。
-// アイコンなどの素材は保存済みの版を優先します。
-const CACHE = 'oshibana-v3';
-const ASSETS = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
+// 画面（index.html）は毎回サーバーから最新を取得し、オフライン時だけ保存済みの版を使います。
+const CACHE = 'oshibana-v10';
+const ASSETS = ['./manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
@@ -20,10 +19,10 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
 
-  // 画面本体：ネットワーク優先（更新がすぐ反映される）
-  if (req.mode === 'navigate') {
+  // 画面本体：ブラウザの一時保存も使わず、必ず最新を取りに行く
+  if (req.mode === 'navigate' || url.pathname.endsWith('/index.html')) {
     e.respondWith(
-      fetch(req).then(res => {
+      fetch(req, { cache: 'no-store' }).then(res => {
         const copy = res.clone();
         caches.open(CACHE).then(c => c.put('./index.html', copy));
         return res;
@@ -32,7 +31,7 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // 同じサイトの素材：保存済み優先
+  // 同じサイトの素材（アイコンなど）：保存済み優先
   if (url.origin === location.origin) {
     e.respondWith(caches.match(req).then(hit => hit || fetch(req)));
     return;
