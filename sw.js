@@ -1,7 +1,7 @@
 // オシバナ Service Worker
 // 画面（index.html）は常に最新を取りに行き、オフライン時だけ保存済みの版を使います。
 // アイコンなどの素材は保存済みの版を優先します。
-const CACHE = 'oshibana-v1';
+const CACHE = 'oshibana-v3';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
